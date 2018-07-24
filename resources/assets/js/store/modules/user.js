@@ -1,4 +1,4 @@
-import Alert from '../../classes/alert';
+import Alert from '@/classes/alert';
 import User from '../../classes/user';
 /**
  * This is the Auth module. It contains details of the user as well as
@@ -25,7 +25,7 @@ export default {
   mutations: {
     storeUser(state, user){
 
-      state.user = new User(user);
+      state.user = user;
 
     },
 
@@ -48,8 +48,9 @@ export default {
         axios.post('/vue/login', user)
 
             .then(({data}) => {
-
-              commit('storeUser', data.user);
+              let user = data.user;
+              user.roles = data.roles;
+              commit('storeUser', user);
 
               Alert.dispatch('Successfully logged in', 'success')
 
@@ -126,13 +127,13 @@ export default {
       .then( ({data}) => {
 
         let user = data.user;
+        user.roles = data.roles;
 
         context.commit('storeUser', user);
 
       })
 
       .catch ( ({resonse}) => {
-          console.log('user not logged in');
       })
 
     },

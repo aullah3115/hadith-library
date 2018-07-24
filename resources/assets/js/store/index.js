@@ -7,6 +7,7 @@ Vue.use(Vuex);
  * below.
  */
 
+import admin from './modules/admin';
 import user from './modules/user';
 import book from './modules/book';
 import commentary from './modules/commentary';
@@ -44,6 +45,7 @@ const store = new Vuex.Store(
 
     modules: {
 
+      admin,
       user,
       book,
       commentary,

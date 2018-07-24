@@ -48,12 +48,10 @@ class HadithController extends Controller
     public function linkHadith(Request $request){
 
       //return $request->all();
-      $linked_hadith = $this->hadith_service->linkHadith($request->all());
-      if(!$linked_hadith){
-        return;
-      }
+      $this->hadith_service->linkHadith($request->all());
+      //TODO add Reqeest class
       return response()->json([
-        'linked_hadith' => $linked_hadith,
+        'linked_hadith' => $request->all(),
         'status' => 201
       ]);
     }
@@ -64,6 +62,16 @@ class HadithController extends Controller
 
       return response()->json([
         'linked_hadiths' => $linked_hadiths,
+        'status' => 201
+      ]);
+    }
+
+    public function getSuggestedHadith($hadith_id){
+      //return $hadith_neo_id;
+      $suggested_hadiths = $this->hadith_service->getSuggestedHadith($hadith_id);
+
+      return response()->json([
+        'suggested_hadiths' => $suggested_hadiths,
         'status' => 201
       ]);
     }
@@ -80,9 +88,14 @@ class HadithController extends Controller
       ]);
     }
 
-    public function update(Request $request, Hadith $hadith)
+    public function update(Request $request)
     {
-        //
+        $hadith = $this->hadith_service->updateHadith($request->all());
+
+        return response()->json([
+          'hadith' => $hadith,
+          'status' => 201
+        ]);
     }
 
     public function destroy(Hadith $hadith)

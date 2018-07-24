@@ -16,4 +16,12 @@ export default {
     state.search_results = results;
   },
 
+  storeSearchResults1(state, results){
+    state.search_results1 = results;
+  },
+
+  storeSearchTerms(state, terms){
+    state.search_terms = terms;
+  }
+
 }

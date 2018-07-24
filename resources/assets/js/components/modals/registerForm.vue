@@ -19,6 +19,8 @@
 
           <v-text-field label="Your Name" v-model="name" required :autofocus="true"></v-text-field>
 
+          <v-text-field label="Your Username" v-model="username" required></v-text-field>
+
           <v-text-field label="Your Email" v-model="email" required></v-text-field>
 
           <v-text-field
@@ -61,6 +63,7 @@ export default {
     return {
       hidePassword: true,
       name: "",
+      username: "",
       email: "",
       password: "",
       password_confirmation: "",
@@ -73,6 +76,7 @@ export default {
 
           let data = {
               name: this.name,
+              username: this.username,
               email: this.email,
               password: this.password,
               password_confirmation: this.password_confirmation,

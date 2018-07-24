@@ -25,7 +25,29 @@ class BookRepository extends BaseRepository implements BookInterface
         return Book::class;
     }
 
+    public function getAll(){
+        $books = $this->model->with('author')->get();
+        return $books;
+    }
 
+    public function updateBook($data){
+        $book = $this->model->find($data['book_id']);
+        
+        $book->name = $data['name'];
+        $book->author_id = $data['author_id'];
+
+        $book->save();
+        $book->load('author');
+        
+        return $book;
+    }
+
+    public function addBook($data){
+        $book = $this->model->create($data);
+        $book->load('author');
+
+        return $book;
+    }
 
     /**
      * Boot up the repository, pushing criteria

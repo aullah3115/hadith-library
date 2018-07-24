@@ -11,12 +11,6 @@
 
         </c-navBar>
 
-        <div class="searchbar">
-
-          <c-search-button>
-
-          </c-search-button>
-        </div>
 
 
         <router-view name="main" class="main">
@@ -24,7 +18,9 @@
 
         </router-view>
 
+        <c-footer class="footer"></c-footer>
 
+        <c-bottom-nav></c-bottom-nav>
 
 
 
@@ -59,7 +55,7 @@ export default {
     },
 
   },
-  mounted: function() {
+  created: function() {
     this.$store.dispatch('user/checkAuth');
     this.$store.dispatch('getLanguages');
   },
@@ -77,26 +73,24 @@ export default {
 }
 
 
-
-.searchbar {
-  position:fixed;
-  margin-top: 100px;
-  width: 100%;
-  z-index: 1;
-  background-color: #1A237E;
-}
-
 .main{
-
-  margin-top: 160px;
-
+  margin: 70px 0px 0px;
+  padding: 10px;
+  padding-bottom: 100px;
+  min-height: 100vh;
 }
-.app{
-  background-color: #1A237E;
+
+.footer{
+  margin-bottom: 60px;
 }
 
 .v-container {
   margin: 0px;
+
+}
+
+.app{
+  background-color: white;
 }
 
 </style>

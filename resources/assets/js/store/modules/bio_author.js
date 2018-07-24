@@ -28,6 +28,9 @@ export default {
     },
 
     addAuthor(state, data){
+      if(!state.authors){
+        state.authors = [];
+      }
       state.authors.push(data);
     },
   },

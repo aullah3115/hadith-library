@@ -6,6 +6,7 @@ use App\Jobs\CommentaryJobs\AddCommentaryToElastic;
 
 use App\Eloquent\Contracts\HadithCommentInterface;
 use Cviebrock\LaravelElasticsearch\Facade as ElasticSearch;
+use Illuminate\Support\Facades\Storage;
 
 class HadithCommentService
 {
@@ -21,6 +22,9 @@ class HadithCommentService
 
   public function getCommentaryText($id){
 
+      $path =  'commentary/' . $id . ".txt";
+      return Storage::get($path);
+    /*
       $params = [
         'index' => 'commentary',
         'type' => '_doc',
@@ -35,7 +39,7 @@ class HadithCommentService
       } catch (\Exception $e) {
           return $e->getMessage();
       }
-
+      */
   }
 
   public function commentsForHadith($id){
@@ -49,7 +53,7 @@ class HadithCommentService
     $text = $data['text'];
 
     $blurb = strlen($text) > 200 ? substr($text, 0, 200) . '...' : $text;
-    
+
     $comment = $this->repository->addComment([
       'hadith_id' => $data['hadith_id'],
       'commentary_id' => $data['commentary_id'],
@@ -57,10 +61,29 @@ class HadithCommentService
     ]);
 
     $data['id'] = $comment->id;
+    
+    $elastic_data = [
+    'body' => [
+        'text' => $data['text'],
+        'book' => $data['book'],
+    ],
+    'index' => 'commentary',
+    'type' => '_doc',
+    'id' => $data['id'],
+    ];
 
-    AddCommentaryToElastic::dispatch($data);
+    try {
+      $results = ElasticSearch::index($elastic_data);
+    } catch (\Exception $e) {
 
-    $comment->text = $data['text'];
+    }
+
+    $path =  'commentary/' . $data['id'] . ".txt";
+    Storage::put($path, $data['text'], 'private');
+
+    //AddCommentaryToElastic::dispatch($data);
+
+    $comment->text = $text;
 
     return $comment;
   }

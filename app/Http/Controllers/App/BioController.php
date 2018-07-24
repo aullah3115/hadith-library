@@ -20,15 +20,17 @@ class BioController extends Controller
         //
     }
 
+    public function getText($id){
+      $text = $this->service->getBioText($id);
+
+      return response()->json(['text' => $text, 'status' => 201], 201);
+    }
+
     public function biosForNarrator($narrator_id){
 
       $bios = $this->service->biosForNarrator($narrator_id);
 
-      return response()->json([
-        'bios' => $bios,
-        'status' => 201
-      ], 201);
-
+      return response()->json(['bios' => $bios, 'status' => 201], 201);
 
     }
 

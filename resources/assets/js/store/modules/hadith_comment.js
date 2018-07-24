@@ -13,7 +13,6 @@ export default {
   state: {
     comments: null,
     comment: null,
-    comment_text: null,
   },
 
   /**
@@ -42,10 +41,6 @@ export default {
       state.comment = comment;
     },
 
-    storeText(state, text){
-      state.comment_text = text;
-    },
-
   },
 
   /**
@@ -58,8 +53,6 @@ export default {
     addComment: function({dispatch, state, commit}, data){
       axios.post('/vue/hadith_comment/create', data)
       .then( ({data}) => {
-        console.log(data);
-
         dispatch('modal/hide', 'addHadithComment', {root: true});
         commit('addComment', data.comment);
       })
@@ -85,10 +78,11 @@ export default {
     },
 
     selectComment: function({commit}, comment){
-      commit('storeComment', comment);
+
       axios.get('/vue/text/for/hadith/comment/' + comment.id)
       .then( ({data}) => {
-          commit('storeText', data.text);
+        comment.text = data.text;
+        commit('storeComment', comment);
       })
     },
   },

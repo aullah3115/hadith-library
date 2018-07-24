@@ -5,7 +5,7 @@ if (workbox) {
   console.log(`Yay! Workbox is loaded 🎉`);
 
 workbox.precaching.precacheAndRoute([
-  
+
 ]);
 } else {
   console.log(`Boo! Workbox didn't load 😬`);
@@ -13,7 +13,7 @@ workbox.precaching.precacheAndRoute([
 
 workbox.routing.registerRoute(
   new RegExp('.*\.js'),
-  workbox.strategies.networkFirst({
+  workbox.strategies.cacheFirst({
     // Use a custom cache name
     cacheName: 'js-cache',
   })

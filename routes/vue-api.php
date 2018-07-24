@@ -61,9 +61,21 @@ Route::get('languages', 'LanguageController@index');
 
 Route::get('related/hadith/for/hadith/{hadith_id}', 'HadithController@getLinkedHadith');
 
+Route::get('suggested/hadith/for/hadith/{hadith_id}', 'HadithController@getSuggestedHadith');
+
 Route::get('narrators/narrator/{narrator_id}', 'NarratorController@getById');
 
+Route::get('teachers/for/narrator/{narrator_id}', 'NarratorController@getTeachers');
+
+Route::get('students/for/narrator/{narrator_id}', 'NarratorController@getStudents');
+
+Route::get('narrations/of/{student_id}/from/{teacher_id}', 'NarratorController@getNarrations');
+
+Route::get('narrations/for/narrator/{narrator_id}', 'NarratorController@getAllNarrations');
+
 Route::get('text/for/hadith/comment/{comment_id}', 'HadithCommentController@getText');
+
+Route::get('text/for/bio/{bio_id}', 'BioController@getText');
 //Route::get('getBook/for/section/{section_id}', 'SectionController@getBook');
 
 Route::middleware('token', 'auth:api')->group(function(){
@@ -86,13 +98,19 @@ Route::middleware('token', 'auth:api')->group(function(){
 
       Route::post('book/create', 'BookController@store');
 
+      Route::post('book/edit/', 'BookController@update');
+
       Route::post('bio_book/create', 'BioBookController@store');
 
       Route::post('bio/create', 'BioController@store');
 
       Route::post('section/create', 'SectionController@store');
 
+      Route::post('section/edit', 'SectionController@update');
+
       Route::post('hadith/create', 'HadithController@store');
+
+      Route::post('hadith/edit', 'HadithController@update');
 
       Route::post('hadith_comment/create', 'HadithCommentController@store');
 
@@ -104,9 +122,30 @@ Route::middleware('token', 'auth:api')->group(function(){
 
       Route::post('language/create', 'LanguageController@store');
 
+
+      Route::group(['middleware' => ['role:super-admin']], function () {
+
+        Route::get('users', 'UserController@getAll');
+
+        Route::get('roles/for/user/{user_id}', 'UserController@getUserRoles');
+
+        Route::get('permissions/for/role/{role_id}', 'UserController@getRolePermissions');
+
+        Route::get('roles', 'UserController@getRoles');
+
+        Route::get('permissions', 'UserController@getPermissions');
+
+        Route::post('role', 'UserController@createRole');
+
+        Route::post('permission', 'UserController@createPermission');
+        
+      });
+
   //});
 
 });
+
+
 
 /*
 Route::group(['middleware' => 'auth:api'], function(){

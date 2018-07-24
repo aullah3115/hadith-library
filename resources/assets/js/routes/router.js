@@ -3,9 +3,9 @@ import { createSandbox } from 'vue-kindergarten';
 import { sync } from 'vuex-router-sync';
 
 import routes from './routes';
-import RouteGoverness from '../acl/GuestGoverness';
+import RouteGoverness from '@/acl/GuestGoverness';
 
-import authPerimeter from '../perimeters/auth';
+import authPerimeter from '@/acl/perimeters/auth';
 
 const router = new VueRouter({mode: 'history', base: '/app/', routes,});
 

@@ -50,9 +50,16 @@ class SectionController extends Controller
           ]);
     }
 
-    public function update(Request $request, Section $section)
+    public function update(Request $request)
     {
-        //
+        $data = $request->all();
+        
+        $section = $this->service->updateSection($data);
+
+        return response()->json([
+          'section' => $section,
+          'status' => 201
+        ]);
     }
 
     public function destroy(Section $section)

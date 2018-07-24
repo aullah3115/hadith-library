@@ -24,4 +24,8 @@ class Book extends Model
     public function commentaries(){
       return $this->hasMany('App\Eloquent\Entities\Commentaries');
     }
+
+    public function hadiths(){
+      return $this->hasManyThrough('App\Eloquent\Entities\Hadith', 'App\Eloquent\Entities\Section');
+    }
 }

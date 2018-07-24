@@ -25,7 +25,7 @@
             hint="At least 8 characters"
             min="8"
             :append-icon="hidePassword ? 'visibility' : 'visibility_off'"
-            :append-icon-cb="() => (hidePassword = !hidePassword)"
+            @click:append="() => (hidePassword = !hidePassword)"
             value=""
             class="input-group--focused"
             :type="hidePassword ? 'password' : 'text'"

@@ -15,9 +15,9 @@ class CreateBiosTable extends Migration
     {
         Schema::create('bios', function (Blueprint $table) {
             $table->increments('id');
-      //      $table->integer('neo_id')->unsigned()->nullabale();
             $table->integer('narrator_id')->unsigned();
             $table->integer('bio_book_id')->unsigned();
+            $table->text('blurb');
             $table->timestamps();
         });
     }

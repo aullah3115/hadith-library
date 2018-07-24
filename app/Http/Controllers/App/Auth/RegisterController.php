@@ -24,25 +24,23 @@ class RegisterController extends Controller
 
         $name = $validated['name'];
         $email = $validated['email'];
+        $username = $validated['username'];
         $password = bcrypt($validated['password']);
 
-        $neo_user = NeoUser::create([
-          'name' => $name,
-          'email' => $email,
-          'password' => $password,
-        ]);
-
-        $neo_id = $neo_user->id;
-        //return gettype($neo_id);
         $user = User::create([
-            'neo_id' => $neo_id,
             'name' => $name,
             'email' => $email,
             'password' => $password,
         ]);
 
-        $neo_user->sql_id = $user->id;
-        $neo_user->save();
+        $neo_user = NeoUser::create([
+          'name' => $name,
+          'email' => $email,
+          'password' => $password,
+          'sql_id' => $user->id,
+        ]);
+
+        $user->assignRole('user');
 
         //Auth::logout();
 

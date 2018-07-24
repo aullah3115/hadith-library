@@ -51,8 +51,6 @@ export default {
     addTranslation: function({dispatch, state, commit}, data){
       axios.post('/vue/hadith_translation/create', data)
       .then( ({data}) => {
-        console.log(data);
-
         dispatch('modal/hide', 'addTranslation', {root: true});
         commit('addTranslation', data.translation);
       })
@@ -65,7 +63,6 @@ export default {
 
       axios.get('/vue/translations/for/hadith/' + hadith_id)
       .then( ({data}) => {
-        console.log(data);
         commit('storeTranslations', data.translations);
       })
       .catch( (response) => {

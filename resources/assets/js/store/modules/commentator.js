@@ -49,7 +49,6 @@ export default {
 
       axios.get('/vue/commentators')
       .then( ({data}) => {
-        //console.log(data);
         commit('storeCommentators', data.commentators);
       })
       .catch( ({response}) => {

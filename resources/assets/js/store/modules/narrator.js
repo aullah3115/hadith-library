@@ -16,7 +16,12 @@ export default {
 
     narrator: null,
     narrators: null,
-    selected_narrator: null,
+    teachers: null,
+    students: null,
+    selected_teacher: null,
+    selected_student: null,
+    narrations: null,
+    all_narrations: null,
 
   },
 
@@ -31,17 +36,44 @@ export default {
       state.narrators = data;
     },
 
+    storeNarrator(state, narrator){
+      state.narrator = narrator;
+    },
+
+    storeTeachers(state, teachers){
+      state.teachers = teachers;
+    },
+
+    storeStudents(state, students){
+      state.students = students;
+    },
+
     addNarrator(state, data){
+      if(!state.narrator){
+        state.narrator = [];
+      }
       state.narrators.push(data);
     },
 
-    storeNarrator(state, narrator){
-      state.selected_narrator = narrator;
+    selectStudent(state, student){
+      state.selected_student = student;
     },
 
-    removeNarrator(state){
-      state.selected_narrator = null;
-    }
+    selectTeacher(state, teacher){
+      state.selected_teacher = teacher;
+    },
+
+    storeNarrations(state, narrations){
+      state.narrations = narrations;
+    },
+
+    removeNarrations(state){
+      state.narrations = null;
+    },
+
+    storeAllNarrations(state, narrations){
+      state.all_narrations = narrations;
+    },
 
   },
 
@@ -68,10 +100,24 @@ export default {
       });
     },
 
-    getNarratorById: function(id){
+    getNarratorById: function({dispatch, commit}, id){
       axios.get('/vue/narrators/narrator/' + id)
       .then( ({data}) => {
-        console.log(data);
+        commit('storeNarrator', data.narrator);
+      })
+    },
+
+    getTeachers: function({dispatch, commit}, id){
+      axios.get('/vue/teachers/for/narrator/' + id)
+      .then( ({data}) => {
+        commit('storeTeachers', data.teachers);
+      })
+    },
+
+    getStudents: function({dispatch, commit}, id){
+      axios.get('/vue/students/for/narrator/' + id)
+      .then( ({data}) => {
+        commit('storeStudents', data.students);
       })
     },
 
@@ -93,14 +139,27 @@ export default {
 
     },
 
-    selectNarrator: function({commit}, data){
-      commit('storeNarrator', data);
+    getNarrations: function({dispatch, commit, state}, data){
+      if(state.selected_student && state.selected_teacher && state.selected_student.id == data.student.id && state.selected_teacher.id == data.teacher.id){
+        return;
+      }
+
+      commit('selectStudent', data.student);
+      commit('selectTeacher', data.teacher);
+      commit('removeNarrations');
+
+      axios.get('/vue/narrations/of/' + data.student.id + '/from/' + data.teacher.id, data)
+      .then( ({data}) => {
+        commit('storeNarrations', data.narrations);
+      })
     },
 
-    unselectNarrator: function({commit}){
-      commit('removeNarrator');
+    getAllNarrations: function({dispatch, commit, state}, narrator_id){
+      axios.get('/vue/narrations/for/narrator/' + narrator_id)
+      .then( ({data}) => {
+        commit('storeAllNarrations', data.narrations);
+      })
     },
-
 
   },
 }

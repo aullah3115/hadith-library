@@ -32,7 +32,7 @@ class SectionRepository extends BaseRepository implements SectionInterface
       return $hadiths;
     }
 
-    public function createS($data){
+    public function createSection($data){
       if(!$data['book_id']){
         $book_id = $this->model->find($data['parent_id'])->book_id;
         $data['book_id'] = $book_id;
@@ -41,6 +41,19 @@ class SectionRepository extends BaseRepository implements SectionInterface
       $section = $this->model->create($data);
       return $section;
 
+    }
+
+    public function updateSection($data){
+      
+      
+      $section = $this->model->find($data['section_id']);
+     
+      $section->name = $data['name'];
+      $section->has_section = $data['has_section'];
+      $section->has_hadith = $data['has_hadith'];
+
+      $section->save();
+      return $section;
     }
 
     /**

@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import authPerimeter from '../../perimeters/auth';
+import authPerimeter from '@/acl/perimeters/auth';
 
 export default {
   data: function(){

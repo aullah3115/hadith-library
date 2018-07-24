@@ -13,12 +13,14 @@ export default {
    */
 
   state: {
-    hadiths: null,
-    linked_hadiths: null,
+    hadiths: null, //move to sections module
+    linked_hadiths: null, // move to related hadith module
     hadith: null,
-    linked_hadith: null,
-    related_hadith: null,
-    related_hadiths: null,
+    linked_hadith: null, // move to related hadith module
+    related_hadith: null, // move to related hadith module
+    related_hadiths: null, // move to related hadith module
+    suggested_hadith: null,
+    suggested_hadiths: null,
     chain: null,
     tab: "0",
     panel: null,
@@ -83,6 +85,10 @@ export default {
         state.related_hadiths = related_hadiths;
     },
 
+    storeSuggestedHadiths(state, suggested_hadiths){
+        state.suggested_hadiths = suggested_hadiths;
+    },
+
     storeSearchResults(state, results){
       state.search_results = results;
     },
@@ -93,6 +99,14 @@ export default {
 
     unselectRelatedHadith(state){
       state.related_hadith = null;
+    },
+
+    selectSuggestedHadith(state, hadith){
+      state.suggested_hadith = hadith;
+    },
+
+    unselectSuggestedHadith(state){
+      state.suggested_hadith = null;
     },
 
   },
@@ -155,8 +169,6 @@ export default {
 
       axios.get('/vue/hadiths/hadith/' + hadith_id)
       .then( ({data}) => {
-        console.log(data);
-
         commit('storeLinkedHadith', data.hadith);
 
       })
@@ -170,7 +182,6 @@ export default {
 
       axios.get('/vue/chain/for/hadith/' + hadith_id)
       .then( ({data}) => {
-        console.log(data);
         commit('storeChain', data.chain);
       })
       .catch( (response) => {
@@ -191,11 +202,18 @@ export default {
       });
     },
 
+    editHadith: function({commit, dispatch, state}, data){
+      axios.post('/vue/hadith/edit', data)
+      .then( ({data}) => {
+        commit('storeHadith', data.hadith);
+        dispatch('modal/hide', 'editHadith', {root: true});
+      })
+    },
+
     addLink: function({commit, dispatch, state}, data){
 
       axios.post('/vue/addLink/to/hadith/', data)
       .then( ({data}) => {
-        console.log(data);
         commit('addLink', data.link);
         dispatch('modal/hide', 'addLink', {root: true});
         Alert.dispatch('Successfully added a new link', 'success');
@@ -209,7 +227,6 @@ export default {
     linkHadith: function({commit, dispatch, state}, data){
       axios.post('/vue/hadith/link/with/hadith', data)
       .then( ({data}) => {
-        console.log(data);
         commit('addLinkedHadith', data.linked_hadith);
       })
     },
@@ -221,15 +238,20 @@ export default {
     getRelatedHadiths: function({commit, state, dispatch}, hadith_id){
       axios.get('/vue/related/hadith/for/hadith/' + hadith_id)
       .then( ({data}) => {
-        console.log(data.linked_hadiths);
         commit('storeRelatedHadiths', data.linked_hadiths);
+      })
+    },
+
+    getSuggestedHadiths: function({commit, state, dispatch}, hadith_id){
+      axios.get('/vue/suggested/hadith/for/hadith/' + hadith_id)
+      .then( ({data}) => {
+        commit('storeSuggestedHadiths', data.suggested_hadiths);
       })
     },
 
     selectRelatedHadith: function({commit}, id){
       axios.get('/vue/hadiths/hadith/' + id)
       .then( ({data}) => {
-        console.log(data);
         commit('selectRelatedHadith', data.hadith);
       })
 
@@ -237,6 +259,18 @@ export default {
 
     unselectRelatedHadith: function({commit}){
       commit('unselectRelatedHadith');
+    },
+
+    selectSuggestedHadith: function({commit}, id){
+      axios.get('/vue/hadiths/hadith/' + id)
+      .then( ({data}) => {
+        commit('selectSuggestedHadith', data.hadith);
+      })
+
+    },
+
+    unselectSuggestedHadith: function({commit}){
+      commit('unselectSuggestedHadith');
     },
 
 

@@ -28,7 +28,7 @@ import PassportPersonalAccessToken from '../components/passport/PersonalAccessTo
 
 // perimeters
 
-import authPerimeter from '../perimeters/auth';
+import authPerimeter from '@/acl/perimeters/auth';
 
 /**
  * The following are the routes
@@ -38,28 +38,35 @@ export default [
 
   {path: '/', component: Components.App, children: [
 
-    {path: '', name: 'home', components: {main: Components.Home}, },
+      {path: '', name: 'home', components: {main: Components.Home}, },
 
-    {path: 'about', name: 'about', components: {main: Components.About}, },
+      {path: 'about', name: 'about', components: {main: Components.About}, },
 
-    {path: 'profile',  name: 'profile', components: {main: Components.Profile},
-    meta: {perimeter: authPerimeter, perimeterAction: 'auth'}, },
+      {path: 'profile',  name: 'profile', components: {main: Components.Profile},
+      meta: {perimeter: authPerimeter, perimeterAction: 'auth'}, },
 
-    {path: 'books', name: 'books', components: {main: Components.Books}, },
+      {path: 'settings',  name: 'settings', components: {main: Components.Settings},
+      meta: {perimeter: authPerimeter, perimeterAction: 'auth'}, },
 
-    {path: 'books/book/:book_id', name: 'openBook', components: {main: Components.Sections},
-    props: {main: (route) =>( {book_id_prop: route.params.book_id, parent_id_prop: null, complete:true} ) }, },
+  ],},
 
-    {path: 'sections/section/:parent_id', name: 'openSection',components: {main: Components.Sections},
-    props: {main: (route) => ( {book_id_prop: null, parent_id_prop: route.params.parent_id, complete: true} ) }, },
+  {path: '/library', component: Components.App, children: [
 
-    {path: 'hadiths/hadith/:hadith_id', name: 'hadith', components: {main: Components.Hadith},
+    {path: '', name: 'books', components: {main: Components.Books}, },
+
+    {path: 'books/book/:book_id(\\d+)', name: 'openBook', components: {main: Components.Sections},
+    props: {main: (route) =>( {book_id: route.params.book_id, parent_id: null, } ) }, },
+
+    {path: 'sections/section/:parent_id(\\d+)', name: 'openSection',components: {main: Components.Sections},
+    props: {main: (route) => ( {book_id: null, parent_id: route.params.parent_id,} ) }, },
+
+    {path: 'hadiths/hadith/:hadith_id(\\d+)', name: 'hadith', components: {main: Components.Hadith},
     props: {main: true}, },
 
     {path: 'search/results', name: 'search_results', components: {main: Components.search_results},
     props: {main: true}, },
 
-    {path: 'narrators/narrator/:narrator_id', name: 'narrator_info', components: {main: Components.narrator_info},
+    {path: 'narrators/narrator/:narrator_id(\\d+)', name: 'narrator', components: {main: Components.narrator_info},
     props: {main: true}, },
 
     {path: '*', name: '404', components: {main: Components.PageNotFound}},
@@ -72,6 +79,18 @@ export default [
     //props: {main: true}, },
 
   ]},
+
+  {path: '/super_admin', component: Components.super_admin_app, children: [
+
+    {path: '', name: 'super-admin-home', components: {main: Components.super_admin_home}, 
+    meta: {perimeter: authPerimeter, perimeterAction: 'superAdmin', } },
+
+    {path: '*', name: 'admin-404', components: {main: Components.PageNotFound}},
+
+
+  ]},
+
+  
 
 
 ]

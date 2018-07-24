@@ -10,6 +10,15 @@ let mix = require('laravel-mix');
  | file for the application as well as bundling up all the JS files.
  |
  */
+
+mix.webpackConfig({
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'resources/assets/js')
+    }
+  }
+});
+
  mix.extend( 'i18n', function( webpackConfig, ...args ) {
      webpackConfig.module.rules.forEach( ( module ) => {
          // Search for the "vue-loader" component, which handles .vue files.

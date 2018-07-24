@@ -43,9 +43,14 @@ class BookController extends Controller
       ], 201);
     }
 
-    public function update(Request $request, Books $books)
+    public function update(Request $request)
     {
-        //
+        $data = $request->all();
+        $book = $this->service->updateBook($data);
+        return response()->json([
+          'book' => $book,
+          'status' => 201
+        ], 201);;
     }
 
     public function destroy(Books $books)

@@ -17,10 +17,13 @@ export default {
       login: false,
       register: false,
       addBook: false,
+      editBook: false,
       addCommentary: false,
       addCommentator: false,
       addSection: false,
+      editSection: false,
       addHadith: false,
+      editHadith: false,
       addHadithComment: false,
       addNarrator: false,
       addAuthor: false,
@@ -32,6 +35,12 @@ export default {
       addTranslation: false,
       linkHadith: false,
       searchbar: false,
+      displayNarrations: false,
+      compare: false,
+
+      // admin modals
+      addRole: false,
+      addPermission: false,
     },
 
     showModals: [],

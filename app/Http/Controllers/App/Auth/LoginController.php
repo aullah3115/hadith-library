@@ -29,6 +29,8 @@ class LoginController extends Controller
 
 
       $user = Auth::user();
+      
+      $roles = $user->getRoleNames();
 
       Auth::logout();
 
@@ -63,6 +65,7 @@ class LoginController extends Controller
             ->json([
                     //'token' => $data->access_token,
                     'user' => $user,
+                    'roles' => $roles,
                     'status' => 200
                     ])
             ->cookie('token', $token, 3600//, '/'//,, true, true

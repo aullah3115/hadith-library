@@ -13,6 +13,7 @@ export default {
    */
 
   state: {
+    section: null,
     sections: null,
     linked_sections: null,
     parent: null,
@@ -28,6 +29,10 @@ export default {
 
     storeSections(state, sections){
       state.sections = sections;
+    },
+
+    storeSection(state, section){
+      state.section = section;
     },
 
     storeLinkedSections(state, sections){
@@ -47,6 +52,15 @@ export default {
         state.sections = [];
       }
       state.sections.push(section);
+    },
+
+    editSection(state, section){
+      let index = state.sections.findIndex(function(element){
+        
+        return element.id == section.id;
+      });
+      
+      state.sections.splice(index, 1, section);
     },
 
     unselectLinkedSections(state){
@@ -99,14 +113,14 @@ export default {
 
     },
 
-    getParent: ({commit, dispatch, state}, data) => {
+    getParent: ({commit, dispatch, state}, parent_id) => {
 
-      if(!data.parent_id){
+      if(!parent_id){
           commit('storeParent', null);
           return;
       }
 
-      axios.get('/vue/section/parent/' + data.parent_id )
+      axios.get('/vue/section/parent/' + parent_id )
       .then( ({data}) => {
 
           dispatch('book/storeBook', data.book, {root: true});
@@ -146,6 +160,7 @@ export default {
       .then(({data}) => {
 
         commit('addSection', data.section);
+        dispatch('modal/hide', 'addSection', {root: true});
         Alert.dispatch('Successfully added section', 'success');
       })
       .catch(({response}) => {
@@ -153,9 +168,27 @@ export default {
       });
     },
 
-    unselectLinkedSections: function({commit}){
+    editSection: ({commit, dispatch}, data) => {
+
+      axios.post('/vue/section/edit', data)
+      .then(({data}) => {
+
+        commit('editSection', data.section);
+        dispatch('modal/hide', 'editSection', {root: true});
+        Alert.dispatch('Successfully added section', 'success');
+      })
+      .catch(({response}) => {
+        Alert.dispatch(response.data.message, 'error');
+      });
+    },
+
+    unselectLinkedSections: ({commit}) => {
       commit('unselectLinkedSections');
-    }
+    },
+
+    storeSection: ({commit}, section) => {
+      commit('storeSection', section);
+    },
 
   },
 }

@@ -26,6 +26,19 @@ class HadithRepository extends BaseRepository implements HadithInterface
         return Hadith::class;
     }
 
+    public function updateHadith($data){
+      $hadith = $this->model->find($data['id']);
+
+      $hadith->chain = $data['chain'];
+      $hadith->blurb = $data['blurb'];
+
+      $hadith->save();
+
+      $hadith->section = $hadith->load('section.book');
+
+      return $hadith;
+    }
+
     public function getById($id){
       $hadith = $this->model->find($id);
       $hadith->section = $hadith->load('section.book');

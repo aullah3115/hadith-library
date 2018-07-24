@@ -15,7 +15,7 @@ class Hadith extends NeoEloquent
 
    protected $label = "Hadith";
 
-   protected $fillable = ['sql_id', 'number', 'chain', 'blurb'];
+   protected $fillable = ['sql_id', 'number', 'chain', 'blurb', 'book', 'section'];
 
    public function book(){
      return $this->belongsTo('App\NeoEloquent\Entities\Book', 'CONTAINS');

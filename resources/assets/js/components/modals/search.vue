@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-toolbar card dark color="primary">
-      <v-toolbar-title>Search</v-toolbar-title>
+      <v-toolbar-title>{{$t('message.search')}}</v-toolbar-title>
 
        <v-spacer></v-spacer>
 
@@ -15,12 +15,13 @@
 
     <v-card-text>
       <v-form @submit.prevent="submit">
-        <v-text-field autofocus placeholder="Enter your search query here..." min="1" outline v-model="query"></v-text-field>
+        <v-text-field autofocus label="Enter your search query here..." min="1" outline v-model="query"></v-text-field>
 
         <v-checkbox v-model="index" label="Ahaadith" value="hadith"></v-checkbox>
         <v-checkbox v-model="index" label="Commentaries" value="commentary"></v-checkbox>
         <v-checkbox v-model="index" label="Narrators" value="narrator"></v-checkbox>
-        <v-btn depressed color="blue" type="submit">Submit</v-btn>
+        <v-checkbox v-model="index" label="Biographies" value="bio"></v-checkbox>
+        <v-btn depressed color="primary" type="submit">{{$t('message.submit')}}</v-btn>
       </v-form>
 
     </v-card-text>
@@ -29,7 +30,7 @@
 </template>
 
 <script>
-import authPerimeter from '../../perimeters/auth';
+import authPerimeter from '@/acl/perimeters/auth';
 
 export default {
   data: function(){

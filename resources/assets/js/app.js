@@ -17,6 +17,7 @@ import VueKindergarten from 'vue-kindergarten';
 import VueScrollTo from 'vue-scrollto';
 import VueMq from 'vue-mq';
 import VueI18n from 'vue-i18n';
+import TextHighlight from 'vue-text-highlight';
 
 require('./filters/index');
 
@@ -34,7 +35,14 @@ Vue.use(VueMq, {
   }
 });
 
+Vue.component('text-highlight', TextHighlight);
+
+//require('./channels/index'); TODO required for websockets
+import store from './store/index';
+
 import messages from './language/messages';
+
+//const locale = store.state.locale;
 
 const i18n = new VueI18n({
   locale: 'en',
@@ -42,45 +50,15 @@ const i18n = new VueI18n({
   messages,
 });
 
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
+Vue.use(Vuetify, {
+  theme: {
+    primary: store.state.theme.primary,
+    secondary: store.state.theme.secondary,
+    admin:store.state.theme.admin,
+  },
+  rtl: false,
+})
 
- /**
-  * I have decided to store components in a subdirectory and will import them
-  * here.
-  */
-
-
-
-
-/**
- * Here we will initialize the store
- */
-
-require('./channels/index');
-import store from './store/index';
-
-Vue.use(Vuetify, {rtl: store.state.rtl});
-
-//const store = new Vuex.Store(Store);
-
-/**
- * Next we will set up the router
- */
-
-//import Routes from './routes/routes';
-
-//const routes = Routes;
-
-//const router = new VueRouter({mode: 'history', base: '/app/', routes,});
-
-
-/**
- * Now we set up the vue acl
- */
 
  Vue.use(VueKindergarten, {child: (store) => {
 
@@ -91,8 +69,6 @@ Vue.use(Vuetify, {rtl: store.state.rtl});
 import router from './routes/router';
 
 require('./components/registerComponents');
-
-
 
 const app = new Vue({
     router,

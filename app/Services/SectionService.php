@@ -3,6 +3,7 @@ namespace App\Services;
 
 use App\Eloquent\Contracts\SectionInterface;
 use Illuminate\Support\Facades\Storage;
+use TSF\Neo4jClient\Facades\Neo4jClient;
 
 class SectionService
 {
@@ -47,7 +48,43 @@ class SectionService
 
   public function addSection($data){
 
-    $section = $this->repository->createS($data);
+    $section = $this->repository->createSection($data);
+
+    return $section;
+  }
+
+  public function updateSection($data){
+    $section = $this->repository->updateSection($data);
+    $old_name = $data['old_name'];
+    $name = $data['name'];
+
+    $query = "MATCH (hadith:Hadith {section: {$old_name} }) SET hadith.section = {$name}";
+
+    Neo4jClient::run($query);
+
+    $update = [
+      'index'     => 'hadith',
+      'type'      => '_doc',
+      'conflicts' => 'proceed',
+      'body' => [
+          'query' => [
+              'query_string' => [
+                'fields' => ['section'],
+                'query' => "\"{$data['old_name']}\"",
+              ]
+          ],
+
+          'script' => [
+              'lang' => 'painless',
+              'inline' => 'ctx._source.section = params.section',
+                  'params' => [
+                      'section' => $data['name'],
+                  ]
+              ]
+
+      ]
+  ]; // TODO make into job
+    $results = ElasticSearch::updateByQuery($update);
 
     return $section;
   }

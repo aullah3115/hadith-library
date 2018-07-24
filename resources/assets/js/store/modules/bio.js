@@ -13,6 +13,7 @@ export default {
    */
 
   state: {
+    narrator_id: null,
     bios: null,
     selected_bio: null,
   },
@@ -25,6 +26,10 @@ export default {
   mutations: {
     storeBios(state, bios){
       state.bios = bios;
+    },
+
+    storeNarratorId(state, id){
+      state.narrator_id = id;
     },
 
     addBio(state, bio){
@@ -55,20 +60,24 @@ export default {
       .then( ({data}) => {
         Alert.dispatch('New biography added', 'success');
         dispatch('modal/hide', 'addBio', {root:true});
-        commit('addBio', data.bio)
-        //console.log(data);
+        commit('addBio', data.bio);
       })
       .catch( (response) => {
-        //console.log(response);
+        
       })
     },
 
     getBios: function({dispatch, state, commit}, narrator_id){
 
+      if(state.narrator_id == narrator_id){
+        return;
+      }
+
       axios.get('/vue/bios/for/narrator/' + narrator_id)
       .then( ({data}) => {
 
         commit('storeBios', data.bios);
+        commit('storeNarratorId', narrator_id);
       })
       .catch( (response) => {
         //TODO
@@ -76,7 +85,14 @@ export default {
     },
 
     selectBio: function ({dispatch, commit, state}, bio){
-      commit('selectBio', bio);
+
+
+      axios.get('/vue/text/for/bio/' + bio.id)
+      .then( ({data}) => {
+        bio.text = data.text;
+        commit('selectBio', bio);
+      });
+
     },
 
     unselectBio: function ({dispatch, commit, state}){

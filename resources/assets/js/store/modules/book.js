@@ -30,6 +30,18 @@ export default {
         state.books.push(book);
     },
 
+    editBook(state, book) {
+     // state.books.push(book);
+      
+      let index = state.books.findIndex(function(element){
+        
+        return element.id == book.id;
+      });
+      
+      state.books.splice(index, 1, book);
+      
+  },
+
     storeBook(state, book){
       state.book = book;
     },
@@ -78,8 +90,6 @@ export default {
 
       axios.post('/vue/book/create', data)
       .then( ({data}) => {
-        console.log(data);
-
         commit('addBook', data.book);
         dispatch('modal/hide', 'addBook', {root: true});
         Alert.dispatch('Book successfully added', 'success');
@@ -92,9 +102,26 @@ export default {
 
     },
 
-    storeBook: function({dispatch, commit, state}, data){
+    editBook: function({dispatch, commit, state}, data) {
 
-      var book = new Book(data);
+      axios.post('/vue/book/edit/', data)
+      .then( ({data}) => {
+        commit('editBook', data.book);
+        dispatch('modal/hide', 'editBook', {root: true});
+        Alert.dispatch('Book successfully edited', 'success');
+
+      })
+      
+      .catch(({response}) => {
+        Alert.dispatch(response.data, 'error');
+
+      });
+      
+    },
+
+    storeBook: function({dispatch, commit, state}, book){
+
+      //var book = new Book(data);
       commit('storeBook', book);
 
 
@@ -120,7 +147,6 @@ export default {
 
       axios.get('/vue/books/book/' + book_id)
       .then(function({data}){
-        console.log(data.book);
         dispatch('storeBook', data.book);
       })
       .catch();
@@ -138,7 +164,6 @@ export default {
 
        axios.get('/vue/books/book/' + book_id)
        .then(function({data}){
-         console.log(data.book);
          dispatch('storeLinkedBook', data.book);
        })
        .catch();

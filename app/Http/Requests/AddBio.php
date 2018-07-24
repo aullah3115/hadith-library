@@ -27,6 +27,8 @@ class AddBio extends FormRequest
             'narrator_id' => '',
             'bio_book_id' => '',
             'text' => '',
+            'narrator' => '',
+            'book' => '',
         ];
     }
 }

@@ -21,7 +21,6 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
-    <script src="{{ asset('js/fontawesome-all.js') }}" defer></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
@@ -40,7 +39,9 @@
     }
     </script>
 
-    <noscript>Your browser does not support JavaScript! You need Javascript enabled to use this app</noscript>
+    <noscript>
+      Your browser does not support JavaScript! You need Javascript enabled to use this app
+    </noscript>
 
 </head>
 <body>

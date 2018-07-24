@@ -10,7 +10,7 @@ class Bio extends Model
 {
     use TransformableTrait;
 
-    protected $guarded = [];
+    protected $fillable = ['narrator_id', 'bio_book_id', 'blurb'];
 
     public function source(){
       return $this->belongsTo('App\Eloquent\Entities\BioBook', 'bio_book_id');

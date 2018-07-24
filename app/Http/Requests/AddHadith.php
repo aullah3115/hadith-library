@@ -28,7 +28,8 @@ class AddHadith extends FormRequest
           'number' => '',
           'chain' => '',
           'body' => '',
-          //'author_comments' => '',
+          'book' => '',
+          'section' => '',
         ];
     }
 }

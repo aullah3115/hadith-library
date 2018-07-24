@@ -1,72 +1,69 @@
 <template>
     <div>
 
-      <v-toolbar app dark color="deep-purple darken-4" height="100px">
+      <v-toolbar app color="primary" height="70px">
 
-
-
-
-
-        <v-toolbar-side-icon v-if="$mq == 'sm' || $mq == 'md'" @click.stop="show('navDrawer')"></v-toolbar-side-icon>
+        <v-toolbar-side-icon @click.stop="show('navDrawer')"></v-toolbar-side-icon>
 
         <mq-layout mq="lg+">
-          <v-btn flat :to="{ name: 'home', params: {} }" active-class>
-            <v-icon left>fas fa-home</v-icon>
-
+          <v-btn icon small :to="{ name: 'home', params: {} }" active-class>
+            <v-icon small>home</v-icon>
           </v-btn>
         </mq-layout>
 
         <mq-layout mq="lg+">
-          <v-btn flat icon @click="goBack">
+          <v-btn small icon @click="goBack">
+            <v-icon small v-if="$vuetify.rtl">arrow_forward</v-icon>
+            <v-icon small v-else>arrow_back</v-icon>
+          </v-btn>
 
-            <v-icon v-if="$vuetify.rtl" left>fas fa-arrow-right</v-icon>
-            <v-icon v-else left>fas fa-arrow-left</v-icon>
+          <v-btn small icon @click="goNext">
+            <v-icon small v-if="$vuetify.rtl">arrow_back</v-icon>
+            <v-icon small v-else>arrow_forward</v-icon>
           </v-btn>
         </mq-layout>
 
-        <mq-layout mq="lg+">
-          <v-btn flat icon @click="goNext">
-            <v-icon v-if="!$vuetify.rtl" left>fas fa-arrow-right</v-icon>
-            <v-icon v-else left>fas fa-arrow-left</v-icon>
-          </v-btn>
-        </mq-layout>
-
-        <v-toolbar-title class="white--text">Hadith Library</v-toolbar-title>
+        <v-toolbar-title>{{$t('message.hadith_library')}}</v-toolbar-title>
 
         <v-spacer></v-spacer>
-        
+
         <mq-layout mq="lg+">
           <v-toolbar-items>
 
-              <v-btn flat :to="{ name: 'about', params: {} }"  active-class>
-                <v-icon left>fas fa-info-circle</v-icon>
-                  About
+            <v-btn small flat @click.native="show('searchbar')">
+              {{$t('message.search')}}
+            </v-btn>
+
+              <v-btn small flat :to="{ name: 'about', params: {} }"  active-class>
+                {{$t('message.about')}}
               </v-btn>
 
-              <v-btn v-if="$isAllowed('guest')" flat @click.stop="show('login')">
-                Sign in
+              <v-btn v-if="$isAllowed('guest')" small flat @click.stop="show('login')">
+                {{$t('message.sign_in')}}
               </v-btn>
 
-              <v-btn v-if="$isAllowed('guest')" flat @click.stop="show('register')">
-                Create a new account
+              <v-btn v-if="$isAllowed('guest')" small flat @click.stop="show('register')">
+                {{$t('message.create_account')}}
               </v-btn>
 
               <v-menu v-if="$isAllowed('auth')">
-                <v-btn flat slot="activator">
-                    My Profile
-                  <v-icon right>fas fa-user-circle</v-icon>
+                <v-btn small flat slot="activator">
+                    {{$t('message.profile')}}
                 </v-btn>
 
 
                 <v-list>
 
                   <v-list-tile @click='goToProfile'>
-                    View Profile
+                    {{$t('message.profile')}}
                   </v-list-tile>
 
+                  <v-divider></v-divider>
+
                   <v-list-tile @click="logout">
-                      Sign Out
+                      {{$t('message.sign_out')}}
                   </v-list-tile>
+
 
                 </v-list>
               </v-menu>
@@ -76,13 +73,34 @@
 
         <mq-layout :mq="['sm', 'md']">
           <v-toolbar-items>
-            <v-btn  @click="logout" flat v-if="$isAllowed('auth')">
-              Sign out
-            </v-btn>
 
-            <v-btn  @click="show('login')" flat v-if="$isAllowed('guest')">
-              Sign in
-            </v-btn>
+            <v-menu>
+              <v-btn icon slot="activator">
+                  <v-icon right>more_vert</v-icon>
+              </v-btn>
+
+
+              <v-list>
+
+                <v-list-tile v-if="$isAllowed('auth')" @click='goToProfile'>
+                  {{$t('message.profile')}}
+                </v-list-tile>
+
+                <v-list-tile v-if="$isAllowed('auth')" @click="logout">
+                    {{$t('message.sign_out')}}
+                </v-list-tile>
+
+                <v-list-tile  @click="show('login')" flat v-if="$isAllowed('guest')">
+                  {{$t('message.sign_in')}}
+                </v-list-tile>
+
+                <v-list-tile  @click="show('register')" flat v-if="$isAllowed('guest')">
+                  {{$t('message.create_account')}}
+                </v-list-tile>
+
+              </v-list>
+            </v-menu>
+
           </v-toolbar-items>
         </mq-layout>
 
@@ -93,7 +111,7 @@
 </template>
 
 <script>
-import authPerimeter from '../../perimeters/auth';
+import authPerimeter from '@/acl/perimeters/auth';
 
 export default {
   data() {
@@ -103,7 +121,14 @@ export default {
   },
 
   computed: {
-
+    direction: {
+      get(){return this.$store.state.dir;}
+    },
+    rtl(){
+      //get(){return this.$store.state.rtl;}
+      let rtl = this.$store.state.rtl;
+      return rtl ? true : false;
+    },
   },
 
   methods: {
@@ -133,6 +158,7 @@ export default {
     },
 
     goBack(){
+
       this.$router.go(-1);
     },
 
