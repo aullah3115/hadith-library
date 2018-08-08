@@ -16,10 +16,34 @@
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="public_key" content="{{ $public_key }}">
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Scripts -->
+    <script type="text/javascript">
+    // Check that service workers are registered
+    //var serviceWorker;
+    function registerServiceWorker() {
+      if(!('serviceWorker' in navigator)){
+        return;
+      }
+      return navigator.serviceWorker.register('/sw.js')
+      .then(function(registration) {
+        console.log('Service worker successfully registered.');
+        return registration;
+      })
+      .catch(function(err) {
+        console.error('Unable to register service worker.', err);
+        return err;
+      });
+    }
+    registerServiceWorker();
+
+    
+
+    </script>
+
     <script src="{{ asset('js/app.js') }}" defer></script>
 
     <!-- Fonts -->
@@ -29,15 +53,7 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
-    <script type="text/javascript">
-    // Check that service workers are registered
-    if ('serviceWorker' in navigator) {
-      // Use the window load event to keep the page load performant
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js');
-      });
-    }
-    </script>
+    
 
     <noscript>
       Your browser does not support JavaScript! You need Javascript enabled to use this app
@@ -45,15 +61,12 @@
 
 </head>
 <body>
+
     <div id="vue-app">
-
-
+            
             <router-view>
 
             </router-view>
-
-
-
 
     </div>
     <!--script src="{{-- mix('js/bundle.js') --}}"></script-->

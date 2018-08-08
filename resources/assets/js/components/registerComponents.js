@@ -5,6 +5,7 @@ Vue.component('c-page-not-found', Components.PageNotFound);
 Vue.component('c-super-admin-app', Components.super_admin_app);
 Vue.component('c-super-admin-home', Components.super_admin_home);
 Vue.component('c-super-admin-nav', Components.super_admin_nav);
+Vue.component('c-messages', Components.messages);
 
 // Admin modals
 Vue.component('c-add-role', Components.addRole);
@@ -29,11 +30,16 @@ Vue.component('c-bottom-nav', Components.bottom_nav);
 Vue.component('c-footer', Components.footer);
 Vue.component('c-display-narrations', Components.displayNarrations);
 Vue.component('c-compare-hadith', Components.compare);
+Vue.component('c-compare-all', Components.compareAll);
+Vue.component('c-contact-form', Components.contact);
+Vue.component('c-select-language', Components.selectLanguage);
+Vue.component('c-directory', Components.directory);
 
 Vue.component('c-profile', Components.Profile);
 
 Vue.component('c-hadith', Components.Hadith);
 Vue.component('c-hadith-comments', Components.hadith_comments);
+Vue.component('c-related-comments', Components.related_comments);
 Vue.component('c-hadith-narrators', Components.hadith_narrators);
 Vue.component('c-hadith-translations', Components.hadith_translations);
 Vue.component('c-related-hadiths', Components.related_hadiths);
@@ -46,6 +52,7 @@ Vue.component('c-add-hadith-comment', Components.addHadithComment);
 Vue.component('c-link-hadith', Components.linkHadith);
 
 Vue.component('c-books', Components.Books);
+Vue.component('c-tree', Components.tree);
 Vue.component('c-book-list', Components.book_list);
 Vue.component('c-add-book', Components.addBook);
 Vue.component('c-edit-book', Components.editBook);

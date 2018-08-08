@@ -13,6 +13,7 @@ export default {
   state: {
     translations: null,
     translation: null,
+    hadith_id: null,
   },
 
   /**
@@ -39,6 +40,10 @@ export default {
     storeTranslation(state, translation){
       state.translation = translation;
     },
+    storeHadithId(state, hadith_id){
+      state.hadith_id = hadith_id;
+      state.translation = null;
+    }
   },
 
   /**
@@ -60,7 +65,11 @@ export default {
     },
 
     getTranslations: function({dispatch, state, commit}, hadith_id){
-
+      if(state.hadith_id && state.hadith_id == hadith_id){
+        return;
+      }
+      commit('storeHadithId', hadith_id);
+      
       axios.get('/vue/translations/for/hadith/' + hadith_id)
       .then( ({data}) => {
         commit('storeTranslations', data.translations);

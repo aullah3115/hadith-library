@@ -7,7 +7,15 @@ import RouteGoverness from '@/acl/GuestGoverness';
 
 import authPerimeter from '@/acl/perimeters/auth';
 
-const router = new VueRouter({mode: 'history', base: '/app/', routes,});
+const router = new VueRouter({
+  mode: 'history', 
+  base: '/app/', 
+  routes, 
+  scrollBehavior (to, from, savedPosition) {
+  
+    return savedPosition ? savedPosition : { x: 0, y: 0 };
+  }
+});
 
 import store from '../store/index';
 
@@ -43,7 +51,7 @@ router.beforeEach((to, from, next) => {
 
 router.beforeEach(function(to, from, next){
   store.dispatch('alert/dismiss');
-  //store.dispatch('nav/showLoading');
+  store.dispatch('modal/hideAll');
   next();
 });
 

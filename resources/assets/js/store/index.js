@@ -23,6 +23,7 @@ import hadith_translation from './modules/hadith_translation';
 import bio_author from './modules/bio_author';
 import bio_book from './modules/bio_book';
 import bio from './modules/bio';
+import search from './modules/search';
 
 
 /*
@@ -61,6 +62,7 @@ const store = new Vuex.Store(
       bio_author,
       bio_book,
       bio,
+      search,
 
     },
 

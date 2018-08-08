@@ -41,6 +41,10 @@ export default {
       return this.$store.state.alert.value;
     },
 
+    timeout(){
+      return this.$store.state.alert.timeout;
+    }
+
 
   },
 

@@ -30,6 +30,11 @@ class HadithCommentRepository extends BaseRepository implements HadithCommentInt
       return $comments;
     }
 
+    public function relatedComments($ids){
+        $comments = $this->model->wherein('hadith_id', $ids)->with(['commentary', 'hadith.section.book'])->get();
+        return $comments;
+      }
+
     public function addComment($data){
       $comment = $this->model->create($data);
       $comment->commentary = $comment->load('commentary');

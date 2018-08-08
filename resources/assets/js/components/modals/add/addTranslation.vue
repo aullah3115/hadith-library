@@ -34,7 +34,7 @@
           <v-stepper-items>
             <v-stepper-content step="1">
 
-
+                  <v-text-field label="Name of translator" v-model="translator"></v-text-field>
                   <div v-if="languages">
 
                     <v-autocomplete
@@ -51,7 +51,7 @@
                       </p>
                   </div>
 
-                  <v-btn flat v-if="$isAllowed('auth')" color="primary" @click.prevent="show('addLanguage')">Add a new language</v-btn>
+                  <v-btn flat color="primary" @click.prevent="show('addLanguage')">Add a new language</v-btn>
                   <v-divider></v-divider>
                   <v-btn :disabled="!language" color="primary" flat @click.native="step=2">Next</v-btn>
 
@@ -115,6 +115,7 @@ export default {
       step: 1,
       language: '',
       text: '',
+      translator: '',
     }
   },
 
@@ -149,6 +150,8 @@ export default {
       let data = {
         hadith_id: this.$store.state.hadith.hadith.id,
         language_id: this.language.id,
+        language_name: this.language.name,
+        translator: this.translator,
         text: this.text,
       }
       console.log(data);

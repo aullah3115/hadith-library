@@ -1,9 +1,9 @@
 <template>
      
-<v-card>
-  <v-card-text  class="grid">
+<v-card  class="related_hadith">
+  <v-card-text class="content">
 
-    <v-card v-if="hadith" height="100%">
+    <!--v-card v-if="hadith" height="100%">
       <v-toolbar color="primary">
         <v-toolbar-title>Hadith from {{hadith.section.book.name}}</v-toolbar-title>
         <v-spacer></v-spacer>
@@ -24,7 +24,7 @@
         </v-card-text>
       </div>
 
-    </v-card>
+    </v-card-->
 
    
       <v-toolbar color="primary">
@@ -33,7 +33,7 @@
 
         <v-spacer></v-spacer>
 
-
+          <v-btn color="primary" @click="show('compareAll')">Show all</v-btn>
           <v-btn icon small v-if="$isAllowed('auth')" @click.native="show('linkHadith')">
             <v-icon>add</v-icon>
           </v-btn>
@@ -42,10 +42,10 @@
       </v-toolbar>
 
       
-        <v-list v-if="hadiths" color="primary" three-line>
+        <v-list class="content" v-if="hadiths" color="primary" three-line>
           <div v-for="hadith in hadiths" :key="hadith.id">
             <v-list-group>
-              <v-list-tile slot="activator" @click="paginate(hadith.body, 100)">
+              <v-list-tile slot="activator">
 
                 <v-list-tile-content>
                   <v-list-tile-title>
@@ -63,7 +63,8 @@
                   <c-paginator :text="hadith.body" :words="100"></c-paginator>
                 </v-card-text>
                 <v-card-actions>
-                  <v-btn @click="paginate(hadith.body, 20)">Open Hadith</v-btn>
+                  <v-btn @click="openHadith(hadith.id)" color="primary">Open Hadith</v-btn>
+                  <v-btn @click="compare(hadith)" color="primary">Compare</v-btn>
                 </v-card-actions>
               </v-card>              
             </v-list-group>
@@ -109,7 +110,9 @@ export default {
   },
 
   watch: {
-    '$route': 'getRelatedHadiths',
+    $route: function(to, from){
+      this.getRelatedHadiths();
+    },
   },
 
   created: function(){
@@ -138,10 +141,12 @@ export default {
       this.$store.dispatch('modal/show', modal);
     },
 
-    openHadith: function(hadith_id){
+    openHadith: function(id){
+      this.$router.push({name: 'hadith', params: {hadith_id: id}});
+      
       return;
     },
-
+  /*
     paginate: function(text, words_per_page = 50){
       let text_array = text.split(" ");
       let pages = [];
@@ -157,6 +162,15 @@ export default {
         pages.push(page);
       }
       this.pages = pages;
+      
+    },
+*/
+    compare: function(hadith){
+      let vue = this;
+      this.$store.dispatch('hadith/storeCompareHadith', hadith)
+      .then( function(){
+        vue.show('compare');
+      })
       
     },
 
@@ -176,15 +190,11 @@ export default {
   overflow-y: auto;
   max-height: 400px;
 }
-.grid{
 
-  height: 300px;
-  overflow-y: hidden;
-}
 
 .content {
   height: 100%;
-  overflow: auto;
+  overflow-y: auto;
 }
 
 .comment{
@@ -192,9 +202,7 @@ export default {
 }
 
 @media screen and (max-width: 800px) {
-  .grid {
-    height: auto;
-  }
+  
 }
 
 </style>

@@ -7,6 +7,10 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\WebNotification;
+use Minishlink\WebPush\WebPush;
+use Minishlink\WebPush\Subscription;
 
 class UserController extends Controller
 {
@@ -69,4 +73,65 @@ class UserController extends Controller
       
       return response()->json(['role' => $role, 'status' => 200]);
     }
+
+    public function subscribeToPush(Request $request){
+      $user = $request->user();
+      $endpoint = $request->input('endpoint');
+      $key = $request->input('keys')['p256dh'];
+      $token = $request->input('keys')['auth'];
+      $user->updatePushSubscription($endpoint, $key , $token);
+
+      //$response = $user->notify(new WebNotification('Welcome', 'Body'));
+      //return response()->json($response);
+      //return $request;
+    }
+
+    public function sendPush(Request $request){
+      $user = $request->user();
+      $message = $request->input('message');
+      
+      $subscriptions = $user->pushSubscriptions;
+
+      $public_key = config('webpush.vapid.public_key');
+      $private_key = config('webpush.vapid.private_key');
+
+      $auth = [
+        //'GCM' => 'MY_GCM_API_KEY', // deprecated and optional, it's here only for compatibility reasons
+        'VAPID' => [
+            'subject' => 'mailto:aullah3115@yahoo.co.uk', // can be a mailto: or your website address
+            'publicKey' => $public_key,
+            'privateKey' => $private_key,
+            //'pem' => 'pemFileContent', // if you have a PEM file and want to hardcode its content
+        ],
+    ];
+
+    $webPush = new WebPush($auth);
+
+      foreach ($subscriptions as $key => $value) {
+
+        $subscription = Subscription::create([
+          'endpoint' => $value->endpoint, 
+          'publicKey' => $value->public_key, 
+          'authToken' => $value->auth_token,
+         ]);
+
+          $response = $webPush->sendNotification(
+            $subscription,
+            $message,
+            true
+          );
+
+          if(is_array($response)){
+            if($response['expired']){
+              $user->pushSubscriptions()
+              ->where('endpoint', $value->endpoint)
+              ->delete();
+            }
+          }
+      }
+      //$response = $webPush->flush();
+      //return response()->json(['response' => $response]);
+      //return $user->notify(new WebNotification('Welcome', 'Body'));
+    }
+
 }

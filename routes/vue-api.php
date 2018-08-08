@@ -21,11 +21,15 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('search', 'SearchController@search');
 
+Route::post('submit/contact/form', 'MessageController@store');
+
 Route::post('login', 'Auth\LoginController@login');
 
 Route::post('register', 'Auth\RegisterController@register');
 
 Route::get('authors', 'AuthorController@index');
+
+Route::get('tree', 'BookController@getTree');
 
 Route::get('bio_authors', 'BioAuthorController@index');
 
@@ -52,6 +56,8 @@ Route::get('hadiths/hadith/{hadith_id}', 'HadithController@index');
 Route::get('chain/for/hadith/{hadith_id}', 'HadithController@getChain');
 
 Route::get('comments/for/hadith/{hadith_id}', 'HadithCommentController@commentsForHadith');
+
+Route::post('related/comments', 'HadithCommentController@relatedComments');
 
 Route::get('translations/for/hadith/{hadith_id}', 'HadithTranslationController@translationsForHadith');
 
@@ -122,8 +128,12 @@ Route::middleware('token', 'auth:api')->group(function(){
 
       Route::post('language/create', 'LanguageController@store');
 
+      Route::post('save-subscription', 'UserController@subscribeToPush');
+
 
       Route::group(['middleware' => ['role:super-admin']], function () {
+
+        Route::post('send/push', 'UserController@sendPush');
 
         Route::get('users', 'UserController@getAll');
 
@@ -134,6 +144,8 @@ Route::middleware('token', 'auth:api')->group(function(){
         Route::get('roles', 'UserController@getRoles');
 
         Route::get('permissions', 'UserController@getPermissions');
+
+        Route::get('messages', 'MessageController@index');
 
         Route::post('role', 'UserController@createRole');
 

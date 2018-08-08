@@ -35,10 +35,10 @@
             </v-btn>
       
 
-        </v-toolbar color="primary">
+        </v-toolbar>
         <v-card-text>
           <v-list v-if="translations">
-            <div v-for="translation in translations">
+            <div v-for="translation in translations" :key="translation.id">
               <v-list-tile @click.prevent='selectTranslation(translation)'>
                 <v-list-tile-content>
                   <v-list-tile-title>
@@ -83,7 +83,7 @@ export default {
     },
     translation: {
       get(){return this.$store.state.hadith_translation.translation;}
-    }
+    },
   },
 
   created: function(){
@@ -92,6 +92,12 @@ export default {
 
   mounted: function(){
 
+  },
+
+  watch:{
+    $route: function(to, from){
+      this.getTranslations();
+    },
   },
 
   methods: {

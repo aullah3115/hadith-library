@@ -1,7 +1,7 @@
 <template>
     <div>
       <v-footer color="secondary">
-       <p>footer</p>
+       <a @click="show('contact')"><h3>Get in touch</h3></a>
 
       </v-footer>
 

@@ -16,6 +16,6 @@
   "start_url": "/app",
   "background_color": "#3367D6",
   "display": "standalone",
-  "scope": "",
+  "scope": "/app",
   "theme_color": "#3367D6"
 }

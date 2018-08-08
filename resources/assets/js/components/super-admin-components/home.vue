@@ -3,7 +3,11 @@
         <h1>Welcome to the super-admin panel</h1>
 
         <v-card>
-          
+          <v-btn color="admin" :to="{name: 'messages', params: {}}">View messages</v-btn>
+
+          <v-text-field label="message" v-model="message"></v-text-field>
+
+          <v-btn color="primary" @click="sendPush()">Send Push</v-btn>
           
         </v-card>
 
@@ -89,7 +93,7 @@ import authPerimeter from '@/acl/perimeters/auth';
 export default {
   data: function(){
     return {
-
+      message: '',
     }
   },
 
@@ -154,6 +158,13 @@ export default {
     getRolePermissions: function(role){
       this.$store.dispatch('admin/getRolePermissions', role);
     },    
+
+    sendPush: function(){
+      let data = {
+        message: this.message,
+      }
+      axios.post('/vue/send/push', data)
+    }
   },
 
   perimeters: [

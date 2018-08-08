@@ -160,6 +160,7 @@ export default {
         commit('storeAllNarrations', data.narrations);
       })
     },
+    
 
   },
 }

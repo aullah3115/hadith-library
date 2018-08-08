@@ -7,7 +7,7 @@ export default {
     about: 'About',
     profile: 'Profile',
     menu: 'Menu',
-    create_account: 'Create a new account',
+    create_account: 'Sign up',
     sign_out: 'Sign out',
     sign_in: 'Sign in',
     language: 'Language',

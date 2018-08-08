@@ -3,7 +3,7 @@
     <h1 class="text-xs-center">Search Results</h1>
 
     <v-btn v-if="results && show" color="primary" @click="group_results()">Group results</v-btn>
-    <v-btn v-if="results && !show" color="primary" @click="ungroup_results()">Unroup results</v-btn>
+    <v-btn v-if="results && !show" color="primary" @click="ungroup_results()">Ungroup results</v-btn>
     
     <v-list v-if="results  && show" three-line>
       <div v-for="result in results" :key="result._id">
@@ -69,8 +69,8 @@
       </div>
     </v-list>
 
-    <v-expansion-panel>
-      <v-expansion-panel-content v-if="hadiths.length > 0">
+    <v-expansion-panel v-if="!show">
+      <v-expansion-panel-content v-if="hadiths">
         <div slot="header">Ahaadith</div>
         <v-list three-line>
 
@@ -92,7 +92,7 @@
         </v-list>
       </v-expansion-panel-content>
 
-      <v-expansion-panel-content v-if="commentaries.length > 0">
+      <v-expansion-panel-content v-if="commentaries">
 
         <div slot="header">Commentaries</div>
         <v-list>
@@ -115,7 +115,7 @@
         </v-list>
       </v-expansion-panel-content>
 
-      <v-expansion-panel-content v-if="bios.length > 0">
+      <v-expansion-panel-content v-if="bios">
         <div slot="header">Biographies</div>
         <v-list>
 
@@ -139,7 +139,7 @@
         </v-list>
       </v-expansion-panel-content>
 
-      <v-expansion-panel-content v-if="narrators.length > 0">
+      <v-expansion-panel-content v-if="narrators">
         <div slot="header">Narrators</div>
         <v-list>
           <div v-for="narrator in narrators" :key="narrator._id">
@@ -165,27 +165,38 @@ import authPerimeter from '@/acl/perimeters/auth';
 export default {
   data: function(){
     return {
+      /*
       hadiths: [],
       commentaries: [],
       narrators: [],
       bios: [],
+      */
       show: true,
     }
   },
 
   computed: {
     results: function(){
-      return this.$store.state.search_results;
+      return this.$store.state.search.search_results;
     },
     results1: function(){
-      return this.$store.state.search_results1;
-    },
-    grouped_results: function(){
-
+      return this.$store.state.search.search_results_grouped;
     },
     search_terms: {
-      get(){return this.$store.state.search_terms;}
-    }
+      get(){return this.$store.state.search.search_terms;}
+    },
+    hadiths: function(){
+      return this.$store.state.search.hadiths;
+    },
+    bios: function(){
+      return this.$store.state.search.bios;
+    },
+    commentaries: function(){
+      return this.$store.state.search.commentaries;
+    },
+    narrators: function(){
+      return this.$store.state.search.narrators;
+    },
 
   },
 
@@ -196,6 +207,7 @@ export default {
   methods: {
 
     group_results: function(){
+      /*
       let results = this.results;
       //console.log(results);
       for(var i = 0; i < results.length; i++){
@@ -216,15 +228,17 @@ export default {
           default:
         }
       }
+      */
       this.show = false;
     },
 
     ungroup_results(){
+      /*
       this.hadiths =[];
       this.bios = [];
       this.narrators =[];
       this.commentaries =[];
-
+*/
       this.show = true;
     },
 

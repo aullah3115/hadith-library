@@ -15,8 +15,9 @@ class HadithAdded implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $message = "A new hadith has been added";
+   // public $message = "A new hadith has been added";
     public $user;
+    protected $hadith;
     /**
      * Create a new event instance.
      *
@@ -28,6 +29,11 @@ class HadithAdded implements ShouldBroadcast
 
     }
 
+    public function hadith($hadith){
+        $this->hadith = $hadith;
+        return $this;
+    }
+
     /**
      * Get the channels the event should broadcast on.
      *
@@ -36,5 +42,10 @@ class HadithAdded implements ShouldBroadcast
     public function broadcastOn()
     {
         return [new PrivateChannel('user'. $this->user->id), new Channel('all')];
+    }
+
+    public function broadcastWith()
+    {
+        return ['hadith' => $this->hadith, 'added_by' => $this->user];
     }
 }

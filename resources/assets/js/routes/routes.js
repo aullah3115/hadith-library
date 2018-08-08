@@ -38,15 +38,16 @@ export default [
 
   {path: '/', component: Components.App, children: [
 
-      {path: '', name: 'home', components: {main: Components.Home}, },
+      {path: '', name: 'language', components: {main: Components.selectLanguage}, },
+
+      {path: 'home', name: 'home', components: {main: Components.Home}, },
 
       {path: 'about', name: 'about', components: {main: Components.About}, },
 
       {path: 'profile',  name: 'profile', components: {main: Components.Profile},
       meta: {perimeter: authPerimeter, perimeterAction: 'auth'}, },
 
-      {path: 'settings',  name: 'settings', components: {main: Components.Settings},
-      meta: {perimeter: authPerimeter, perimeterAction: 'auth'}, },
+      {path: 'settings',  name: 'settings', components: {main: Components.Settings}, },
 
   ],},
 
@@ -82,13 +83,16 @@ export default [
 
   {path: '/super_admin', component: Components.super_admin_app, children: [
 
-    {path: '', name: 'super-admin-home', components: {main: Components.super_admin_home}, 
-    meta: {perimeter: authPerimeter, perimeterAction: 'superAdmin', } },
+    {path: '', name: 'super-admin-home', components: {main: Components.super_admin_home}, },
+
+    {path: 'messages', name: 'messages', components: {main: Components.messages}, },
 
     {path: '*', name: 'admin-404', components: {main: Components.PageNotFound}},
 
 
-  ]},
+  ], 
+  
+  meta: {perimeter: authPerimeter, perimeterAction: 'superAdmin', }},
 
   
 

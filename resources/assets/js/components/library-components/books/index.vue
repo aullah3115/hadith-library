@@ -20,6 +20,10 @@
 
         </v-card-text>
 
+        
+
+
+
       </v-card>
 
   </div>
@@ -37,16 +41,16 @@ export default {
   },
 
   computed: {
-/*
-    books(){
-        return this.$store.state.book.books;
+
+    tree(){
+        return this.$store.state.book.tree;
     },
-*/
+
 
   },
 
   created: function(){
-    //this.getBooks();
+    this.getTree();
 
   },
 
@@ -57,8 +61,8 @@ export default {
      * books from the server
      */
 
-    getBooks: function() {
-    //  this.$store.dispatch('book/getAll');
+    getTree: function() {
+      this.$store.dispatch('book/getTree');
     },
 
     /**
@@ -104,7 +108,7 @@ export default {
 {
   display: grid;
   grid-template-columns:100%;
-  grid-template-rows: 400px;
+  grid-template-rows: auto;
   grid-row-gap: 15px;
   grid-template-areas:
   "body";

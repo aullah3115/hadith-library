@@ -6,8 +6,11 @@ use App\Jobs\NarratorJobs\AddNarratorToNeo4j;
 use App\Jobs\NarratorJobs\AddNarratorToElastic;
 
 use App\Eloquent\Contracts\PersonInterface;
+use App\NeoEloquent\Entities\Narrator as NeoNarrator;
 
 use TSF\Neo4jClient\Facades\Neo4jClient;
+use Cviebrock\LaravelElasticsearch\Facade as ElasticSearch;
+use Illuminate\Support\Facades\Storage;
 
 class NarratorService
 {
@@ -75,11 +78,17 @@ class NarratorService
 
     foreach($records as $record){
       $record = $record->get('hadith');
+      $id = $record->value('sql_id');
+      $path = 'hadith/' . $id . '.txt';
+      $body = Storage::get($path);
+
       $narrations[] = [
-        'id' => $record->value('sql_id'),
+        'id' => $id,
         'blurb' => $record->value('blurb'),
         'book' => $record->value('book'),
-        // TODO add section
+        'section' => $record->value('section'),
+        'position' => $record->value('number'),
+        'body' => $body,
       ];
     }
 
@@ -95,10 +104,16 @@ class NarratorService
 
       foreach($records as $record){
         $record = $record->get('hadith');
+        $id = $record->value('sql_id');
+        $path = 'hadith/' . $id . '.txt';
+        $body = Storage::get($path);
+
         $narrations[] = [
-          'id' => $record->value('sql_id'),
+          'id' => $id,
           'blurb' => $record->value('blurb'),
           'book' => $record->value('book'),
+          'body' => $body,
+          'section' => $record->value('section'),
           // TODO add section
         ];
       }
@@ -111,12 +126,61 @@ class NarratorService
     $narrator = $this->repository->create($data);
     $id = $narrator->id;
 
-    AddNarratorToElastic::dispatch($data, $id);
+    
+    //AddNarratorToElastic::dispatch($data, $id);
 
+    
+
+    //AddNarratorToNeo4j::dispatch($data);
+    $elastic_data = [
+      'body' => $data,
+      'index' => 'narrator',
+      'type' => '_doc',
+      'id' => $id,
+    ];
+
+    try {
+      $exists = ElasticSearch::indices()->exists(['index' => 'narrator']);
+      // if hadith index doesn't exist create new index
+      if(!$exists){
+        $params = [
+          'index' => 'narrator',
+          'body' => [
+            'mappings' => [
+              '_doc' => [
+                'properties' => [
+                  'name' => [
+                    'type' => 'text',
+                    'analyzer' => 'arabic',
+                  ],
+                  'kunyah' => [
+                    'type' => 'text',
+                    'analyzer' => 'arabic',
+                  ],
+                  'used_name' => [
+                    'type' => 'text',
+                    'analyzer' => 'arabic',
+                  ],
+                  'laqab' => [
+                    'type' => 'text',
+                    'analyzer' => 'arabic',
+                  ],
+                ]
+              ]
+            ]
+          ]
+      ];
+
+      $response = ElasticSearch::indices()->create($params);
+      }
+
+      $results = ElasticSearch::index($elastic_data);
+    } catch (\Exception $e) {
+      
+    }
     $data['sql_id'] = $id;
 
-    AddNarratorToNeo4j::dispatch($data);
-
+    $neo_narrator = NeoNarrator::create($data);
 
     return $narrator;
   }

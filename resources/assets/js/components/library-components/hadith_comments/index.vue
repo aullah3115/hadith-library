@@ -35,10 +35,10 @@
 
           </v-toolbar-items>
 
-        </v-toolbar color="primary">
+        </v-toolbar>
         <v-card-text>
           <v-list v-if="comments">
-            <div v-for="comment in comments">
+            <div v-for="comment in comments" :key="comment.id">
               <v-list-tile @click.prevent='selectComment(comment)'>
                 <v-list-tile-content>
                   <v-list-tile-title>
@@ -91,6 +91,13 @@ export default {
 
   created: function(){
     this.getComments();
+  },
+
+  watch: {
+    $route: function(to, from){
+      this.getComments();
+      this.unselectComment();
+    },
   },
 
   mounted: function(){

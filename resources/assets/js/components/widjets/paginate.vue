@@ -1,14 +1,15 @@
 <template>
-    <div class="paginator">
-        <div v-for="(page, index) in pages" :key="index">
+    <v-card>
+
+        <v-card-text v-for="(page, index) in pages" :key="index">
             <div v-if="index + 1 == page_no">{{page}}</div>
-        </div>
+        </v-card-text>
                   <v-pagination class="paginator"
                     v-if="length"
                     v-model="page_no"
                     :length="length"
                   ></v-pagination>
-    </div>
+    </v-card>
 </template>
 
 <script>
@@ -33,7 +34,7 @@ export default {
 
     computed: {
         length: function(){
-        return this.pages ? this.pages.length : null;
+        return this.pages ? this.pages.length : 0;
         },
     },
 

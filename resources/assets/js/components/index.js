@@ -27,6 +27,7 @@ import footer from './partials/footer.vue';
 import super_admin_app from './super-admin-components/app.vue';
 import super_admin_home from './super-admin-components/home.vue';
 import super_admin_nav from './super-admin-components/partials/nav.vue';
+import messages from './super-admin-components/messages.vue';
 
 // Admin Modals
 import addRole from './super-admin-components/modals/addRole.vue';
@@ -34,10 +35,12 @@ import addPermission from './super-admin-components/modals/addPermission.vue';
 // Libary components
 
 import Books from './library-components/books/index.vue';
+import tree from './library-components/books/tree.vue';
 import book_list from './library-components/books/book_list.vue';
 import Hadith from './library-components/hadith/index.vue';
 import chain from './library-components/hadith/chain.vue';
 import hadith_comments from './library-components/hadith_comments/index.vue';
+import related_comments from './library-components/hadith_comments/related_comments.vue';
 import hadith_narrators from './library-components/hadith_narrators/index.vue';
 import hadith_translations from './library-components/hadith_translations/index.vue';
 import related_hadiths from './library-components/related_hadiths/index.vue';
@@ -71,6 +74,9 @@ import navDrawer from './modals/navDrawer.vue';
 import searchbar from './modals/search.vue';
 import displayNarrations from './modals/displayNarrations.vue';
 import compare from './modals/compare.vue';
+import compareAll from './modals/compareAll.vue';
+import contact from './modals/contact.vue';
+import selectLanguage from './modals/selectLanguage.vue';
 
 //import LibraryHome from './library/home.vue';
 // partial components
@@ -78,6 +84,7 @@ import compare from './modals/compare.vue';
 import nav from './partials/nav.vue';
 import alert from './partials/alert.vue';
 import modals from './partials/modals.vue';
+import directory from './partials/directory.vue';
 
 // widjets
 
@@ -109,6 +116,7 @@ import PassportPersonalAccessToken from './passport/PersonalAccessTokens.vue';
    super_admin_app,
    super_admin_home,
    super_admin_nav,
+   messages,
 
    // Admin Modals
    addRole,
@@ -116,6 +124,7 @@ import PassportPersonalAccessToken from './passport/PersonalAccessTokens.vue';
 
    // Library components
    Books,
+   tree,
    book_list,
    Sections,
    linked_sections,
@@ -147,6 +156,7 @@ import PassportPersonalAccessToken from './passport/PersonalAccessTokens.vue';
    addLink,
    chain,
    hadith_comments,
+   related_comments,
    hadith_narrators,
    hadith_translations,
    related_hadiths,
@@ -154,6 +164,9 @@ import PassportPersonalAccessToken from './passport/PersonalAccessTokens.vue';
    search_results,
    displayNarrations,
    compare,
+   compareAll,
+   contact,
+   selectLanguage,
 
    narrator_info,
 
@@ -172,6 +185,7 @@ import PassportPersonalAccessToken from './passport/PersonalAccessTokens.vue';
    searchbar,
    bottom_nav,
    footer,
+   directory,
 
    //widjets
    paginator,

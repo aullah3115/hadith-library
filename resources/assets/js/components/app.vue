@@ -12,11 +12,14 @@
         </c-navBar>
 
 
+        <transition name="fade" mode="out-in">
+          <router-view name="main" class="main">
 
-        <router-view name="main" class="main">
+          </router-view>
+        </transition>
+        
 
-
-        </router-view>
+        <c-directory></c-directory>
 
         <c-footer class="footer"></c-footer>
 
@@ -25,7 +28,7 @@
 
 
 
-
+        
         <c-modals></c-modals>
 
         <c-alert>
@@ -80,10 +83,6 @@ export default {
   min-height: 100vh;
 }
 
-.footer{
-  margin-bottom: 60px;
-}
-
 .v-container {
   margin: 0px;
 
@@ -91,6 +90,25 @@ export default {
 
 .app{
   background-color: white;
+}
+
+@media screen and (max-width: 800px){
+  
+.footer{
+    margin-bottom: 60px;
+  }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition-duration: 0.3s;
+  transition-property: opacity;
+  transition-timing-function: ease;
+}
+
+.fade-enter,
+.fade-leave-active {
+  opacity: 0
 }
 
 </style>

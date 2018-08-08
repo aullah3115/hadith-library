@@ -5,11 +5,11 @@
 
         <v-toolbar-side-icon @click.stop="show('navDrawer')"></v-toolbar-side-icon>
 
-        <mq-layout mq="lg+">
+        <!--mq-layout mq="lg+">
           <v-btn icon small :to="{ name: 'home', params: {} }" active-class>
             <v-icon small>fas fa-home</v-icon>
           </v-btn>
-        </mq-layout>
+        </mq-layout-->
 
         <mq-layout mq="lg+">
           <v-btn small icon @click="goBack">
@@ -30,13 +30,13 @@
         <mq-layout mq="lg+">
           <v-toolbar-items>
 
-            <v-btn small flat @click.native="show('searchbar')">
+            <!--v-btn small flat @click.native="show('searchbar')">
               {{$t('message.search')}}
-            </v-btn>
+            </v-btn-->
 
-              <v-btn small flat :to="{ name: 'about', params: {} }"  active-class>
+              <!--v-btn small flat :to="{ name: 'about', params: {} }"  active-class>
                 {{$t('message.about')}}
-              </v-btn>
+              </v-btn-->
 
               <v-btn v-if="$isAllowed('guest')" small flat @click.stop="show('login')">
                 {{$t('message.sign_in')}}

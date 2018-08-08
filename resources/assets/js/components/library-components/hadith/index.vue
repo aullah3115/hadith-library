@@ -15,7 +15,7 @@
 
             <v-spacer></v-spacer>
 
-              <v-btn icon small @click.native="show('addLink')">
+              <v-btn icon small v-if="$isAllowed('auth')" @click.native="show('addLink')">
                 <v-icon>add</v-icon>
               </v-btn>
 
@@ -45,7 +45,7 @@
         </v-tab>
 
         <v-tab>
-          Related Commentaries - TODO
+          Related Commentaries
         </v-tab>
 
         <v-tab>
@@ -57,26 +57,26 @@
         </v-tab>
 
         <v-tab>
-          Suggested Hadith -TODO
+          Suggested Hadith
         </v-tab>
 
-        <v-tab-item class="tab-item">
+        <v-tab-item class="tab-item" :key="1">
           <c-hadith-comments :hadith_id="hadith_id"></c-hadith-comments>
         </v-tab-item>
 
-        <v-tab-item class="tab-item">
-          TODO related commentaries
+        <v-tab-item class="tab-item" :key="2">
+          <c-related-comments :hadith_id="hadith_id"></c-related-comments>
         </v-tab-item>
 
-        <v-tab-item class="tab-item">
+        <v-tab-item class="tab-item" :key="3">
             <c-hadith-translations :hadith_id="hadith_id"></c-hadith-translations>
         </v-tab-item>
 
-        <v-tab-item class="tab-item">
+        <v-tab-item class="tab-item" :key="4">
             <c-related-hadiths :hadith_id="hadith_id"></c-related-hadiths>
         </v-tab-item>
 
-        <v-tab-item class="tab-item">
+        <v-tab-item class="tab-item" :key="5">
             <c-suggested-hadith :hadith_id="hadith_id"></c-suggested-hadith>
         </v-tab-item>
 
@@ -104,16 +104,21 @@
           </v-expansion-panel-content>
 
           <v-expansion-panel-content :key="2">
+            <div slot="header">Related Comments</div>
+            <c-related-comments :hadith_id="hadith_id"></c-related-comments>
+          </v-expansion-panel-content>
+
+          <v-expansion-panel-content :key="3">
             <div slot="header">{{$t('message.translations')}}</div>
                 <c-hadith-translations :hadith_id="hadith_id"></c-hadith-translations>
           </v-expansion-panel-content>
 
-          <v-expansion-panel-content :key="3">
+          <v-expansion-panel-content :key="4">
             <div slot="header">Related Hadith</div>
                 <c-related-hadiths :hadith_id="hadith_id"></c-related-hadiths>
           </v-expansion-panel-content>
 
-        <v-expansion-panel-content :key="4">
+        <v-expansion-panel-content :key="5">
             <div slot="header">Suggested Hadith</div>
                 <c-suggested-hadith :hadith_id="hadith_id"></c-suggested-hadith>
           </v-expansion-panel-content>
@@ -164,6 +169,13 @@ export default {
   created: function(){
     this.getHadith();
     this.getChain();
+  },
+
+  watch:{
+    $route: function(to, from){
+      this.getHadith();
+      this.getChain();
+    },
   },
 
   methods: {

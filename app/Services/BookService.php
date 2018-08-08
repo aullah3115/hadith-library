@@ -17,6 +17,18 @@ class BookService
     return $books;
   }
 
+  public function getTree(){
+
+    $tree = Neo4jClient::run(
+      "match q = (l:Library)-[:CONTAINS*]-(b) 
+      where not b:Hadith 
+      with COLLECT(q) as qu 
+      Call apoc.convert.toTree(qu) yield value 
+      return value")->getRecord()->value('value');
+    
+    return $tree;
+  }
+
   public function getByID($id){
     $book = $this->repository->find($id);
     return $book;
@@ -25,6 +37,9 @@ class BookService
   public function addBook($data){
 
     $book = $this->repository->addBook($data);
+    $name = $data['name'];
+    $id = $book->id;
+    $neo_book = Neo4jClient::run("MERGE (a:Library) MERGE (b:Book {name: '{$name}', sql_id: {$id} }) MERGE (a)-[:CONTAINS]->(b)");
 
     return $book;
   }

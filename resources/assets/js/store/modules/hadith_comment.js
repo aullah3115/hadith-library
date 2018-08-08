@@ -11,8 +11,12 @@ export default {
    */
 
   state: {
+    hadith_id: null,
     comments: null,
+    related_comments: null,
     comment: null,
+    related_comment: null,
+    related_comments_loading: null,
   },
 
   /**
@@ -32,14 +36,33 @@ export default {
       state.comments = comments;
     },
 
+    storeRelatedComments(state, comments){
+      state.related_comments = comments;
+    },
+
+    removeRelatedComments(state){
+      state.related_comments = null;
+    },
+
     removeComment(state){
       state.comment = null;
-      state.comment_text = null;
+    },
+
+    removeRelatedComment(state){
+      state.related_comment = null;
     },
 
     storeComment(state, comment){
       state.comment = comment;
     },
+
+    storeRelatedComment(state, comment){
+      state.related_comment = comment;
+    },
+
+    storeHadithId(state, id){
+      state.hadith_id =id;
+    }
 
   },
 
@@ -73,8 +96,32 @@ export default {
       });
     },
 
+    getRelatedComments: function({dispatch, state, commit}, data){
+
+      if(state.hadith_id && state.hadith_id == data.hadith_id){
+        return;
+      }
+      
+      commit('removeRelatedComment');
+      commit('removeRelatedComments');
+      commit('storeHadithId', data.hadith_id);
+
+      axios.post('/vue/related/comments', data.related_ids)
+      .then( ({data}) => {
+        console.log(data); 
+        commit('storeRelatedComments', data.comments);
+      })
+      .catch( (response) => {
+        //TODO
+      });
+    },
+
     unselectComment: function({commit}){
       commit('removeComment');
+    },
+
+    unselectRelatedComment: function({commit}){
+      commit('removeRelatedComment');
     },
 
     selectComment: function({commit}, comment){
@@ -83,6 +130,15 @@ export default {
       .then( ({data}) => {
         comment.text = data.text;
         commit('storeComment', comment);
+      })
+    },
+
+    selectRelatedComment: function({commit}, comment){
+
+      axios.get('/vue/text/for/hadith/comment/' + comment.id)
+      .then( ({data}) => {
+        comment.text = data.text;
+        commit('storeRelatedComment', comment);
       })
     },
   },

@@ -25,7 +25,7 @@ class HadithTranslationRepository extends BaseRepository implements HadithTransl
         return HadithTranslation::class;
     }
 
-    public function translationsForHadith($id){
+    public function translationsForHadith( $id){
       $translations = $this->model->where('hadith_id', $id)->with('language')->get();
       return $translations;
     }

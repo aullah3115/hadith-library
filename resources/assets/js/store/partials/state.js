@@ -4,8 +4,6 @@ import locales from '../../language/locales';
 export default {
   languages: null,
   drawer: false,
-  search_results: null, //TODO delete one of these two
-  search_results1: null,
   theme: {
     primary: colors.red.darken1,
     secondary: colors.grey.darken1,
@@ -25,5 +23,6 @@ export default {
     {text: 'beautiful gold', value: colors.amber.darken1},
   ],
   locales,
-  search_terms: [],
+  messages: null,
+  directory: false,
 }

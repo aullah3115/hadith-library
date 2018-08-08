@@ -17,6 +17,7 @@ class CreateHadithTranslationsTable extends Migration
             $table->increments('id');
             $table->integer('hadith_id')->unsigned();
             $table->integer('language_id')->unsigned();
+            $table->string('translator')->nullable();
             $table->timestamps();
         });
     }

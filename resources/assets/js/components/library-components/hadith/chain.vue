@@ -2,10 +2,13 @@
 
     <v-list>
       <div v-for="link in chain" :key="link.id">
-        <v-list-tile @click.prevent="selectNarrator(link)">
+        <v-list-tile>
           <v-list-tile-content>
             {{link.chain.position}}. {{link.used_name}}
           </v-list-tile-content>
+          <v-list-tile-action>
+            <v-btn flat color="primary" @click.prevent="open(link.id)">Open</v-btn>
+          </v-list-tile-action>
         </v-list-tile>
         <v-divider></v-divider>
       </div>
@@ -16,9 +19,14 @@
 
 <script>
 export default {
-  props: [
-    //'hadith_id'
-  ],
+  props: {
+    hadithId: {
+      default: null,
+    },
+    compare: {
+      default: false,
+    }
+  },
   data: function(){
     return {
 
@@ -27,9 +35,15 @@ export default {
 
   computed: {
     chain(){
+      if(this.compare){
+        return this.$store.state.hadith.related_chain;
+      }
       return this.$store.state.hadith.chain;
     },
     hadith_id: function(){
+      if(this.hadithId){
+        return this.hadithId;
+      }
       return this.$route.params.hadith_id;
     }
   },
@@ -38,21 +52,33 @@ export default {
     this.getChain();
   },
 
+  watch: {
+    '$route': 'getChain',
+  },
+
   methods: {
     getChain: function(){
+      if(this.compare){
+        this.$store.dispatch('hadith/getRelatedChain', this.hadith_id);
+        return;
+      }
       this.$store.dispatch('hadith/getChain', this.hadith_id);
     },
 
-    selectNarrator: function(narrator){
-      this.$router.push({name: 'narrator', params:{narrator_id: narrator.id}})
+    open: function(id){
+      if(this.hadithId){
+        return;
+      }
+      this.$router.push({name: 'narrator', params:{narrator_id: id}})
       return;
+      /*
       this.$store.commit('hadith/select_tab', 3);
       this.$store.commit('hadith/select_panel', 3);
       this.$scrollTo('#narrators');
       this.$store.dispatch('bio/unselectBio');
       this.$store.dispatch('narrator/selectNarrator', narrator);
       this.$store.dispatch('bio/getBios', narrator.id);
-
+    */
     },
 
   },

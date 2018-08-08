@@ -14,6 +14,7 @@ export default {
     books: null,
     book: null,
     linked_book: null,
+    tree: null,
 
   },
 
@@ -52,7 +53,11 @@ export default {
 
     unselectLinkedBook(state){
       state.linked_book = null;
-    }
+    },
+
+    storeTree(state, tree){
+      state.tree = tree;
+    },
 
   },
 
@@ -172,6 +177,13 @@ export default {
     unselectLinkedBook: function({commit, dispatch}){
       dispatch('section/unselectLinkedSections', null, {root:true});
       commit('unselectLinkedBook');
+    },
+
+    getTree: function({commit}){
+      axios.get('/vue/tree')
+      .then( ({data}) => {
+        commit('storeTree', data.tree);
+      })
     },
 
 

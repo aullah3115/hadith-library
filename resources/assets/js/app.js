@@ -7,8 +7,23 @@
 
 require('./bootstrap');
 
-window.Vue = require('vue');
+//import {askNotificationPermission, notificationsActive} from './push_notifications';
+//import {notificationsActive} from './push_notifications';
 
+
+window.Vue = require('vue');
+/*
+const NotificationPlugin = {};
+NotificationPlugin.install = function(Vue){
+  Vue.prototype.$showNotification = function(){
+    askNotificationPermission();
+  };
+
+  Vue.prototype.$notificationsActive = function(){
+    return notificationsActive;
+  };
+}
+*/
 
 import Vuex from 'vuex';
 import Vuetify from 'vuetify';
@@ -18,12 +33,14 @@ import VueScrollTo from 'vue-scrollto';
 import VueMq from 'vue-mq';
 import VueI18n from 'vue-i18n';
 import TextHighlight from 'vue-text-highlight';
+//import VueEcho from 'vue-echo-laravel';
+import NotificationPlugin from './notifications/plugin';
 
 require('./filters/index');
 
 Vue.use(VueRouter);
 Vue.use(Vuex);
-
+Vue.use(NotificationPlugin);
 Vue.use(VueScrollTo);
 Vue.use(VueI18n);
 
@@ -35,6 +52,12 @@ Vue.use(VueMq, {
   }
 });
 
+/*
+Vue.use(VueEcho, {
+  broadcaster: 'socket.io',
+  host: window.location.hostname + ':6001',
+});
+*/
 Vue.component('text-highlight', TextHighlight);
 
 //require('./channels/index'); TODO required for websockets

@@ -178,7 +178,7 @@ export default {
         Alert.dispatch('Successfully added section', 'success');
       })
       .catch(({response}) => {
-        Alert.dispatch(response.data.message, 'error');
+        Alert.dispatch("There was an error whilst adding section", 'error');
       });
     },
 

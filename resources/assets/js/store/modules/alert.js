@@ -15,6 +15,7 @@ export default {
     type: "info",
     message: "",
     value: false,
+    timout: null,
 
   },
 

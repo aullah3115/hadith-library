@@ -22,9 +22,133 @@ export default {
     suggested_hadith: null,
     suggested_hadiths: null,
     chain: null,
+    related_chain: null,
     tab: "0",
     panel: null,
     search_results: null,
+    compare_hadith: null,
+  },
+  getters: {
+    unrelated_hadiths: function(state){
+      if(state.linked_hadiths && state.related_hadiths && state.hadith){
+
+            let related_hadiths = state.related_hadiths;
+            let current = state.hadith;
+            let linked_hadiths = state.linked_hadiths;
+
+            let filtered = linked_hadiths.filter( (linked_hadith) => {
+
+               let exists = related_hadiths.findIndex( (related_hadith) => {
+                 return linked_hadith.id == related_hadith.id;
+               });
+
+               if(exists == -1 && (linked_hadith.id != current.id)){
+                 return true;
+               }
+
+               return false;
+             });
+             //The following may not be needed.
+             return filtered/*.map( (hadith) => {
+
+
+                  hadith.blurb = hadith.blurb.length > 100 ? hadith.blurb.substring(0, 100) + '...' : hadith.blurb;
+
+               return hadith;
+             })*/;
+      }
+      return null;
+    },
+
+    first_chain: function(state){
+      let chain = state.chain;
+      let related_chain = state.related_chain;
+
+      let first_chain = [];
+
+      if(chain && related_chain){
+        chain.forEach(link => {
+          
+          let exists = related_chain.findIndex( (related_link) => {
+            return related_link.id == link.id;
+          })
+
+          let data = (exists == -1) ? {narrator: link, unique: true} : {narrator: link, unique: false};
+          first_chain.push(data);
+        });
+
+        return first_chain;
+      }
+      return null;
+    },
+
+    second_chain: function(state){
+      let chain = state.chain;
+      let related_chain = state.related_chain;
+
+      let second_chain = [];
+
+      if(chain && related_chain){
+        related_chain.forEach(related_link => {
+          
+          let exists = chain.findIndex( (link) => {
+            return related_link.id == link.id;
+          })
+
+          let data = (exists == -1) ? {narrator: related_link, unique: true} : {narrator: related_link, unique: false};
+          second_chain.push(data);
+        });
+
+        return second_chain;
+      }
+      return null;
+    },
+
+    related_hadith_ids: function(state){
+      if(state.related_hadiths){
+        let ids = [];
+        let related_hadiths = state.related_hadiths;
+
+        related_hadiths.forEach(hadith => {
+          ids.push(hadith.id)
+        })
+        return ids;
+      }
+      return null;
+    },
+
+    all_related_hadiths: function(state){
+      if(state.related_hadiths && state.hadith){
+
+        let all_related_hadiths = [];
+        let chain = state.chain;
+
+        //iterate over related hadiths
+        state.related_hadiths.forEach(hadith => {
+
+          let related_hadith = hadith;
+          let links = hadith.links;
+          //let related_chain = [];
+
+          //iterate over all links for each hadith
+          links.forEach(related_link => {
+            //see if the current narrator is found in both chains
+            let exists = chain.findIndex( (link) => {
+              return related_link.id == link.id;
+            })
+            // add results to array
+            related_link.unique = (exists == -1) ? true : false;
+            //related_chain.push(data);
+          });
+          //related_hadith.chain = related_chain;
+          related_hadith.change_objects = diff.diffWords(state.hadith.body, hadith.body);
+          all_related_hadiths.push(related_hadith);
+        });
+        return all_related_hadiths;
+      }
+      return null;
+    },
+
   },
 
   /**
@@ -51,6 +175,10 @@ export default {
 
     storeChain(state, chain){
       state.chain = chain;
+    },
+
+    storeRelatedChain(state, chain){
+      state.related_chain = chain;
     },
 
     addHadith(state, hadith){
@@ -107,6 +235,10 @@ export default {
 
     unselectSuggestedHadith(state){
       state.suggested_hadith = null;
+    },
+
+    storeCompareHadith(state, hadith){
+      state.compare_hadith = hadith;
     },
 
   },
@@ -183,6 +315,17 @@ export default {
       axios.get('/vue/chain/for/hadith/' + hadith_id)
       .then( ({data}) => {
         commit('storeChain', data.chain);
+      })
+      .catch( (response) => {
+        //TODO
+      });
+    },
+
+    getRelatedChain: function({commit, dispatch, state}, hadith_id){
+
+      axios.get('/vue/chain/for/hadith/' + hadith_id)
+      .then( ({data}) => {
+        commit('storeRelatedChain', data.chain);
       })
       .catch( (response) => {
         //TODO
@@ -273,7 +416,13 @@ export default {
       commit('unselectSuggestedHadith');
     },
 
-
+    storeCompareHadith({commit}, data){
+      return new Promise(function(resolve, reject) {
+        commit('storeCompareHadith', data);
+        resolve();
+      });
+      
+    },
 
   },
 }

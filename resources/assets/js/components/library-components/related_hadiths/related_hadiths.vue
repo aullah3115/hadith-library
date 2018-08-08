@@ -49,8 +49,11 @@ export default {
 
   computed: {
 
-
-   hadiths(){
+  hadiths () {
+    return this.$store.getters['hadith/unrelated_hadiths'];
+  },
+  /*
+  hadiths_(){
 
              let linked_hadiths = this.$store.state.hadith.linked_hadiths;
              if(!linked_hadiths){
@@ -60,13 +63,13 @@ export default {
              let related_hadiths = this.$store.state.hadith.related_hadiths;
              let current = this.$store.state.hadith.hadith;
              //related_hadiths.push(current);
-             let filtered = linked_hadiths.filter( (l_hadith) => {
+             let filtered = linked_hadiths.filter( (linked_hadith) => {
 
-               let exists = related_hadiths.findIndex( (r_hadith) => {
-                 return l_hadith.id == r_hadith.id;
+               let exists = related_hadiths.findIndex( (related_hadith) => {
+                 return linked_hadith.id == related_hadith.id;
                });
 
-               if(exists == -1 && (l_hadith.id != current.id)){
+               if(exists == -1 && (linked_hadith.id != current.id)){
                  return true;
                }
 
@@ -81,7 +84,7 @@ export default {
                return hadith;
              });
     },
-
+*/
 
 
 

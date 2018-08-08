@@ -23,6 +23,13 @@ class BookController extends Controller
       return response()->json(['books' => $books, 'response' => 200], 200);
     }
 
+    public function getTree()
+    {
+      $tree = $this->service->getTree();
+
+      return response()->json(['tree' => $tree, 'response' => 200], 200);
+    }
+
     public function get($book_id)
     {
 

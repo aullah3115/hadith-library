@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return view('vue-app');
+    return view('vue-app')->with('public_key', config('webpush.vapid.public_key'));
 });
 
 Auth::routes();
@@ -26,6 +26,6 @@ Auth::routes();
 
 Route::any('app/{all?}', function () {
 
-    return view('vue-app');
+    return view('vue-app')->with('public_key', config('webpush.vapid.public_key'));
 })
 ->where(['all' => '.*']);

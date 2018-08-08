@@ -1,12 +1,12 @@
 <template>
   <v-card>
-    <v-toolbar card dark color="primary">
+    <v-toolbar card color="primary">
       <v-toolbar-title>Sign in to your account</v-toolbar-title>
 
        <v-spacer></v-spacer>
 
        <v-toolbar-items>
-         <v-btn icon dark @click.native="hide('login')">
+         <v-btn icon @click.prevent="hide('login')">
            <v-icon>close</v-icon>
          </v-btn>
        </v-toolbar-items>
@@ -35,6 +35,7 @@
 
 
       </v-form>
+      <p>Don't have an account? <a @click.prevent="openRegister()">Click here</a> to register</p>
     </v-card-text>
   </v-card>
 
@@ -68,6 +69,11 @@ export default {
 
             this.$store.dispatch('user/login', user);
 
+        },
+
+        openRegister: function(){
+          this.show('register');
+          this.hide('login');
         },
 
         show: function(modal){

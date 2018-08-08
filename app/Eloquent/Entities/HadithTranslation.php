@@ -13,6 +13,7 @@ class HadithTranslation extends Model
   protected $fillable = [
     'hadith_id',
     'language_id',
+    'translator',
   ];
 
   public function language(){

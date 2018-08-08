@@ -8,7 +8,6 @@
 
         <v-card v-if="narrator">
     
-          </v-toolbar>
 
           <v-card-text>
             <c-hadith-narrators></c-hadith-narrators>
@@ -17,36 +16,12 @@
 
       </v-expansion-panel-content>
 
-      <v-expansion-panel-content v-if="narrations">
-        <div slot="header">All narrations</div>
-        <v-list three-line>
-          <v-divider></v-divider>
-          <div v-for="narration in narrations">
-            <v-list-tile @click.prevent="openHadith(narration.id)">
-              <v-list-tile-content>
-                <v-list-tile-title>
-                  Source: {{narration.book}}
-                </v-list-tile-title>
-
-                <v-list-tile-sub-title>{{narration.blurb | truncate(100)}}</v-list-tile-sub-title>
-
-              </v-list-tile-content>
-              <v-list-tile-action>
-                <v-list-tile-action-text>Click to view</v-list-tile-action-text>
-              </v-list-tile-action>
-            </v-list-tile>
-
-            <v-divider></v-divider>
-          </div>
-        </v-list>
-      </v-expansion-panel-content>
-
       <v-expansion-panel-content v-if="teachers && teachers.length > 0">
         <div slot="header">Narrated from...</div>
 
         <v-list>
           <v-divider></v-divider>
-          <div v-for="teacher in teachers">
+          <div v-for="teacher in teachers" :key="teacher.id">
             <v-list-tile @click.prevent="getTeacherNarrations(teacher)">
               <v-list-tile-content>
                 <v-list-tile-title>
@@ -69,7 +44,7 @@
         <div slot="header">Narrated to...</div>
         <v-list>
           <v-divider></v-divider>
-          <div v-for="student in students">
+          <div v-for="student in students" :key="student.id">
             <v-list-tile @click.prevent="getStudentNarrations(student)">
               <v-list-tile-content>
                 <v-list-tile-title>
@@ -87,6 +62,33 @@
         </v-list>
       </v-expansion-panel-content>
 
+      
+      <v-expansion-panel-content v-if="narrations">
+        <div slot="header">All narrations</div>
+        <v-list three-line>
+          <v-divider></v-divider>
+          <v-list-group v-for="narration in narrations" :key="narration.id">
+            <v-list-tile slot="activator">
+              <v-list-tile-content>
+                <v-list-tile-title>
+                  Source: {{narration.book}}
+                </v-list-tile-title>
+
+                <v-list-tile-sub-title>Section: {{narration.section}}</v-list-tile-sub-title>
+
+              </v-list-tile-content>
+            </v-list-tile>
+
+            <v-card>
+              <v-card-text>{{narration.body}}</v-card-text>
+              <v-btn color="primary" @click="openHadith(narration.id)">Go to hadith</v-btn>
+            </v-card>
+
+            <v-divider></v-divider>
+          </v-list-group>
+        </v-list>
+      </v-expansion-panel-content>
+      
     </v-expansion-panel>
 
   </div>
@@ -121,6 +123,10 @@ export default {
 
     narrations: {
       get(){return this.$store.state.narrator.all_narrations;}
+    },
+
+    hadith: {
+      get(){return this.$store.state.narrator.narration;}
     },
 
   },

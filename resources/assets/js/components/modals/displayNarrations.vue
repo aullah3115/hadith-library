@@ -15,14 +15,23 @@
 
     <v-card-text>
       <v-list v-if="narrations" three-line>
-        <div v-for="narration in narrations">
-          <v-list-tile @click.prevent="openHadith(narration.id)">
+        <v-list-group v-for="narration in narrations" :key="narration.id">
+          <v-list-tile slot="activator">
             <v-list-tile-content>
               <v-list-tile-title>Source: {{narration.book}}</v-list-tile-title>
-              <v-list-tile-sub-title>{{narration.blurb}}</v-list-tile-sub-title>
+              <v-list-tile-sub-title>Section: {{narration.section}}</v-list-tile-sub-title>
             </v-list-tile-content>
           </v-list-tile>
-        </div>
+
+          <v-card>
+            <v-card-text>
+            {{narration.body}}
+            </v-card-text>
+            <v-btn color="primary" @click="openHadith(narration.id)">Go to hadith</v-btn>
+          </v-card>
+        </v-list-group>
+          
+       
       </v-list>
     </v-card-text>
   </v-card>
@@ -54,6 +63,10 @@ export default {
 
     narrations: {
       get(){return this.$store.state.narrator.narrations;}
+    },
+
+    hadith: {
+      get(){return this.$store.state.narrator.narration;}
     },
   },
 

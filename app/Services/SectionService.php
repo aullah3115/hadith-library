@@ -49,6 +49,26 @@ class SectionService
   public function addSection($data){
 
     $section = $this->repository->createSection($data);
+    $id = $section->id;
+    $name = $data['name'];
+    $book_id = $data['book_id'];
+    $parent_id = $data['parent_id'];
+    if($book_id){
+      $neo_section = Neo4jClient::run(
+        "MATCH (a:Book {sql_id: {$book_id} }) 
+        WITH a 
+        MERGE (b:Section {name: '{$name}', sql_id: {$id} }) 
+        MERGE (a)-[:CONTAINS]->(b)");
+    } 
+
+    if($parent_id){
+      $neo_section = Neo4jClient::run(
+        "MATCH (a:Section {sql_id: {$parent_id} }) 
+        WITH a 
+        MERGE (b:Section {name: '{$name}', sql_id: {$id} }) 
+        MERGE (a)-[:CONTAINS]->(b)");
+    } 
+    
 
     return $section;
   }

@@ -29,11 +29,11 @@
             <span class="text-xs-center">{{$t("message.about")}}</span>
           </v-list-tile>
 
-          <v-list-tile @click="hide('navDrawer')" :to="{name: 'profile', props: {}}" exact>
+          <v-list-tile v-if="$isAllowed('auth')" @click="hide('navDrawer')" :to="{name: 'profile', props: {}}" exact>
             <span class="text-xs-center">{{$t("message.profile")}}</span>
           </v-list-tile>
 
-          <v-list-tile v-if="$isAllowed('auth')" @click="hide('navDrawer')" :to="{name: 'settings', props: {}}" exact>
+          <v-list-tile @click="hide('navDrawer')" :to="{name: 'settings', props: {}}" exact>
             <span class="text-xs-center">{{$t("message.settings")}}</span>
           </v-list-tile>
 

@@ -12,16 +12,13 @@ export default {
   toggleDrawer(state){
     state.drawer = !state.drawer;
   },
-  storeSearchResults(state, results){
-    state.search_results = results;
+
+  storeMessages(state, messages){
+    state.messages = messages;
   },
 
-  storeSearchResults1(state, results){
-    state.search_results1 = results;
+  toggleDirectory(state, value){
+    state.directory = value;
   },
-
-  storeSearchTerms(state, terms){
-    state.search_terms = terms;
-  }
 
 }

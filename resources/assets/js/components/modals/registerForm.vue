@@ -1,13 +1,13 @@
 <template>
 
     <v-card>
-      <v-toolbar card dark color="primary">
+      <v-toolbar card color="primary">
         <v-toolbar-title>Create a new account</v-toolbar-title>
 
          <v-spacer></v-spacer>
 
          <v-toolbar-items>
-           <v-btn icon dark @click.native="hide('register')">
+           <v-btn icon @click.prevent="hide('register')">
              <v-icon>close</v-icon>
            </v-btn>
          </v-toolbar-items>
@@ -30,7 +30,7 @@
               hint="At least 8 characters"
               min="8"
               :append-icon="hidePassword ? 'visibility' : 'visibility_off'"
-              :append-icon-cb="() => (hidePassword = !hidePassword)"
+              @click:append="() => (hidePassword = !hidePassword)"
               value=""
               class="input-group--focused"
               :type="hidePassword ? 'password' : 'text'"
@@ -43,7 +43,7 @@
                 hint="At least 8 characters"
                 min="8"
                 :append-icon="hidePassword ? 'visibility' : 'visibility_off'"
-                :append-icon-cb="() => (hidePassword = !hidePassword)"
+                @click:append="() => (hidePassword = !hidePassword)"
                 value=""
                 class="input-group--focused"
                 :type="hidePassword ? 'password' : 'text'"
@@ -52,6 +52,7 @@
             <v-btn color="primary" flat type="submit">Submit</v-btn>
 
         </v-form>
+        <p>Already have an account? <a @click.prevent="openLogin()">Click here</a> to sign in</p>
       </v-card-text>
     </v-card>
 
@@ -84,6 +85,11 @@ export default {
 
           this.$store.dispatch('user/register', data);
 
+      },
+
+      openLogin: function(){
+        this.show('login');
+        this.hide('register');
       },
 
       show: function(modal){

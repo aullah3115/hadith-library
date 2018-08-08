@@ -8,14 +8,15 @@ use App\Jobs\HadithJobs\LinkHadithInNeo4j;
 
 use App\Events\HadithAdded;
 
-use App\NeoEloquent\Entities\Hadith as NeoHadith;
+use App\NeoEloquent\Entities\Hadith as NeoHadith;//Not needed?
+use App\Elasticsearch\Entities\Hadith as ElasticHadith;
 
 use App\Eloquent\Contracts\HadithInterface;
 use App\Eloquent\Contracts\PersonInterface;
 use Illuminate\Support\Facades\Storage;
 
 use TSF\Neo4jClient\Facades\Neo4jClient;
-use Cviebrock\LaravelElasticsearch\Facade as ElasticSearch;
+use Cviebrock\LaravelElasticsearch\Facade as ElasticSearch; //NO LONGER NEEDED?
 
 class HadithService
 {
@@ -29,23 +30,6 @@ class HadithService
 
     $path = 'hadith/' . $id . '.txt';
     $hadith->body = Storage::get($path);
-    /*
-
-    $params = [
-      'index' => 'hadith',
-      'type' => '_doc',
-      'id' => $id,
-      '_source' => ['body'],
-    ];
-
-    try {
-        $results = Elasticsearch::get($params);
-        $hadith->body =  $results['_source']['body'];
-
-    } catch (\Exception $e) {
-        return $e->getMessage();
-    }
-*/
 
     return $hadith;
   }
@@ -54,92 +38,75 @@ class HadithService
   public function addHadith($data){
 
     $body = $data['body'];
-
-    $data['blurb'] = strlen($body) > 200 ? substr($body, 0, 200) . '...' : $body;
-
+    $number = $data['number'];
+    $chain = $data['chain'];
+    $section_id = $data['section_id'];
+    $section = $data['section'];
+    $book = $data['book'];
+    //shorten the body text
+    $blurb = strlen($body) > 200 ? substr($body, 0, 200) . '...' : $body;
+    //store hadith in mysql
     $hadith = $this->repository->create([
-      'number' => $data['number'],
-      'section_id' => $data['section_id'],
-      'chain' => $data['chain'],
-      'blurb' => $data['blurb'],
+      'number' => $number,
+      'section_id' => $section_id,
+      'chain' => $chain,
+      'blurb' => $blurb,
     ]);
 
+    //get sql id for hadith
+    $id = $hadith->id;
+    
+    //store hadith in neo4j attaching it to the correct section
+    $neo_hadith = Neo4jClient::run("
+    MATCH (a:Section {sql_id: {$section_id} }) WITH a 
+    MERGE (b:Hadith {sql_id: {$id}, number: {$number}, chain: '{$chain}', blurb: '{$blurb}', book: '{$book}', section: '{$section}' })
+    MERGE (a)-[:CONTAINS]->(b)");
 
-    $data['id'] = $hadith->id;
-
-    $neo_hadith = NeoHadith::create([
-      'sql_id' => $data['id'],
-      'number' => $data['number'],
-      'blurb' => $data['blurb'],
-      'book' => $data['book'],
-      'section' => $data['section'],
-    ]); // TODO change to Neo4j client
-
-    //AddHadithToNeo4j::dispatch($data);
-
-    $elastic_data = [
-    'body' => [
-        'body' => $data['body'],
-        'chain' => $data['chain'],
-        'book' => $data['book'],
-        'section' => $data['section'],
-    ],
-    'index' => 'hadith',
-    'type' => '_doc',
-    'id' => $data['id'],
-    ];
-    try {
-      $results = ElasticSearch::index($elastic_data);
-    } catch (\Exception $e) {
-
-    }
-  //  AddHadithToElastic::dispatch($data);
-    $path = 'hadith/' . $data['id'] . '.txt';
-    Storage::put($path, $data['body'], 'private');
+    //store hadith body in filesystem
+    $path = 'hadith/' . $id . '.txt';
+    Storage::put($path, $body, 'private');
 
     $hadith->body = $body;
 
-    //event(new HadithAdded);
+    //AddHadithToNeo4j::dispatch($data);
+
+
+    $elastic_hadith = new ElasticHadith;
+    $elastic_hadith->create($id, $data);
+      
+  //  AddHadithToElastic::dispatch($id, $data);
+
+    $event = new HadithAdded();
+    $event->hadith($hadith);
+
+    broadcast($event); //TODO
 
     return $hadith;
   }
 
   public function updateHadith($data){
 
+    $id = $data['id'];
     $body = $data['body'];
+    $chain = $data['chain'];
 
-    $data['blurb'] = strlen($body) > 200 ? substr($body, 0, 200) . '...' : $body;
+    $blurb = strlen($body) > 200 ? substr($body, 0, 200) . '...' : $body;
+    $data['blurb'] = $blurb;
 
-    $hadith = $this->repository->updateHadith($data);
+    $hadith = $this->repository->updateHadith($data); //make this into queued job?
 
-    $id = (int)$data['id'];
-
-    $neo_query = "MATCH(hadith:Hadith {sql_id: {$data['id']} })
-    SET hadith.chain = '{$data['chain']}', hadith.blurb = '{$data['blurb']}'";
+    $neo_query = "MATCH(hadith:Hadith {sql_id: {$id} })
+    SET hadith.chain = '{$chain}', hadith.blurb = '{$blurb}'"; //make this into queued job?
 
     $neo_hadith = Neo4jClient::run($neo_query);
 
-    $params = [
-      'index' => 'hadith',
-      'type' => '_doc',
-      'id' => $data['id'],
-      'body' => [
-          'doc' => [
-            'body' => $data['body'],
-            'chain' => $data['chain'],
-          ]
-      ]
-  ];
-  
-    try {
-      $response = Elasticsearch::update($params);
-    } catch (\Exception $e) {
-
-    }
-
-    $path = 'hadith/' . $data['id'] . '.txt';
+    $path = 'hadith/' . $id . '.txt';
     Storage::delete($path);
-    Storage::put($path, $data['body'], 'private');
+    Storage::put($path, $body, 'private'); //make this into queued job?
+
+    $elastic_hadith = new ElasticHadith;
+    $elastic_data = ['body' => $body, 'chain' => $chain]; 
+    $elastic_hadith->update($id, $elastic_data);
 
     $hadith->body = $body;
 
@@ -166,11 +133,15 @@ class HadithService
     $hadith_id = (int)$data['hadith_id'];
     $narrator_id = (int)$data['narrator_id'];
 
+    //$tx = Neo4jClient::transaction();
+
     $neo_query = "MATCH(narrator: Narrator { sql_id: {$narrator_id}})
     MATCH(hadith: Hadith { sql_id : {$hadith_id}})
     WITH hadith, narrator
     MERGE(link: Link { position : {$position}, hadith_id : {$hadith_id}})
     MERGE(narrator)-[:OF]->(link)-[:BELONGS_TO]->(hadith)";
+
+    //$tx->push($neo_query);
 
     Neo4jClient::run($neo_query);
 
@@ -191,12 +162,14 @@ class HadithService
   }
 
   public function linkHadith($data){
-    if($data['hadith_1_id'] == $data['hadith_2_id']){
+    $first_hadith = $data['hadith_1_id'];
+    $second_hadith = $data['hadith_2_id'];
+    if($first_hadith == $second_hadith){
       return null;
     }
 
-    $neo_query = "MATCH(first_hadith:Hadith {sql_id: {$data['hadith_1_id']} })
-    MATCH(second_hadith:Hadith {sql_id: {$data['hadith_2_id']} })
+    $neo_query = "MATCH(first_hadith:Hadith {sql_id: {$first_hadith} })
+    MATCH(second_hadith:Hadith {sql_id: {$second_hadith} })
     WITH first_hadith, second_hadith
     MERGE(first_hadith)-[:RELATED_TO]->(second_hadith)";
 
@@ -226,19 +199,9 @@ class HadithService
 
         $path = 'hadith/' . $id . '.txt';
         $content = Storage::get($path);
-        /*
-        $params = [
-        'index' => 'hadith',
-        'type' => '_doc',
-        'id' => $id,
-        '_source' => ['body', 'book'],
-          ];
-
-          $results = Elasticsearch::get($params);
-          $content = $results['_source']['body'];
-          $book = $results['_source']['book'];
-          */
-          $related_hadiths[] = ['id' => $id, 'body' => $content, 'book' => $book, 'section' => $section, 'position' => $position];
+        $chain = $this->repository->getChain($id);
+   
+          $related_hadiths[] = ['id' => $id, 'body' => $content, 'book' => $book, 'section' => $section, 'position' => $position, 'links' => $chain];
       } catch (\Exception $e) {
         return $e->getMessage();
       }
@@ -252,27 +215,22 @@ class HadithService
 
     $id = (int)$id;
 
-    $query = "MATCH(a:Hadith {sql_id: {$id} })-[:RELATED_TO]-(m)-[:RELATED_TO]-(n) RETURN n";
+    $query = "MATCH(a:Hadith {sql_id: {$id} })-[:RELATED_TO]-(m)-[:RELATED_TO]-(n) WHERE NOT (a)-[:RELATED_TO]-(n) RETURN n";
     $suggested_hadiths = [];
     $records = Neo4jClient::run($query)->getRecords();
 
     foreach($records as $record){
       $record = $record->get('n');
       $id = $record->value('sql_id');
+      $book = $record->value('book');
+      $section = $record->value('section');
+      $position = $record->value('number');
 
       try {
-        $params = [
-        'index' => 'hadith',
-        'type' => '_doc',
-        'id' => $id,
-        '_source' => ['body', 'book'],
-          ];
-
-          $results = Elasticsearch::get($params);
-          $content = $results['_source']['body'];
-          $book = $results['_source']['book'];
-
-          $suggested_hadiths[] = ['id' => $id, 'body' => $content, 'book' => $book];
+        $path = 'hadith/' . $id . '.txt';
+        $content = Storage::get($path);
+     
+          $suggested_hadiths[] = ['id' => $id, 'body' => $content, 'book' => $book, 'section' => $section, 'position' => $position];
       } catch (\Exception $e) {
         return $e->getMessage();
       }

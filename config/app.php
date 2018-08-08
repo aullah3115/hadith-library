@@ -159,13 +159,14 @@ return [
          Laravel\Passport\PassportServiceProvider::class,
          Prettus\Repository\Providers\RepositoryServiceProvider::class,
          Cviebrock\LaravelElasticsearch\ServiceProvider::class,
+         App\WebPush\WebPushServiceProvider::class,
 
         /*
          * Application Service Providers...
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
-         App\Providers\BroadcastServiceProvider::class,
+        App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 

@@ -48,6 +48,12 @@ class HadithCommentService
     return $comments;
   }
 
+  public function relatedComments($data){
+    $comments = $this->repository->relatedComments($data);
+
+    return $comments;
+  }
+
   public function addComment($data){
 
     $text = $data['text'];
@@ -60,26 +66,52 @@ class HadithCommentService
       'blurb' => $blurb,
     ]);
 
-    $data['id'] = $comment->id;
+    $id = $comment->id;
     
-    $elastic_data = [
-    'body' => [
-        'text' => $data['text'],
-        'book' => $data['book'],
-    ],
-    'index' => 'commentary',
-    'type' => '_doc',
-    'id' => $data['id'],
-    ];
+    
 
     try {
+      $exists = ElasticSearch::indices()->exists(['index' => 'commentary']);
+      // if hadith index doesn't exist create new index
+      if(!$exists){
+        $params = [
+          'index' => 'commentary',
+          'body' => [
+            'mappings' => [
+              '_doc' => [
+                'properties' => [
+                  'text' => [
+                    'type' => 'text',
+                    'analyzer' => 'arabic',
+                  ],
+                  'book' => [
+                    'type' => 'text',
+                    'analyzer' => 'arabic',
+                  ],
+                ]
+              ]
+            ]
+          ]
+      ];
+
+      $response = ElasticSearch::indices()->create($params);
+      }
+      $elastic_data = [
+        'body' => [
+            'text' => $data['text'],
+            'book' => $data['book'],
+        ],
+        'index' => 'commentary',
+        'type' => '_doc',
+        'id' => $id,
+        ];
       $results = ElasticSearch::index($elastic_data);
     } catch (\Exception $e) {
 
     }
 
-    $path =  'commentary/' . $data['id'] . ".txt";
-    Storage::put($path, $data['text'], 'private');
+    $path =  'commentary/' . $id . ".txt";
+    Storage::put($path, $text, 'private');
 
     //AddCommentaryToElastic::dispatch($data);
 

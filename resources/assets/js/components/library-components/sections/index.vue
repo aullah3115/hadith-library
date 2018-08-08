@@ -239,7 +239,7 @@ export default {
 
   display: grid;
   grid-template-columns: 100%;
-  grid-template-rows: 48px 400px;
+  grid-template-rows: 48px auto;
   grid-template-areas:
   "title"
   "body";

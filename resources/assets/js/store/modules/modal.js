@@ -37,6 +37,8 @@ export default {
       searchbar: false,
       displayNarrations: false,
       compare: false,
+      compareAll: false,
+      contact: false,
 
       // admin modals
       addRole: false,
@@ -89,6 +91,13 @@ export default {
       state.loadingMessage = message;
     },
 
+    hideAll(state){
+      state.showModals.forEach(element => {
+        state.modals[element] = false;
+      });
+      state.showModals = [];
+    }
+
   },
 
   /**
@@ -109,6 +118,10 @@ export default {
     setMessage: function({commit}, message){
       commit('setMessage', message);
     },
+
+    hideAll: function({commit}){
+      commit('hideAll');
+    }
 
 
 

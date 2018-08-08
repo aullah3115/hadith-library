@@ -1,7 +1,7 @@
 <template>
 
   <v-card v-if="links">
-    <v-toolbar card dark color="primary">
+    <v-toolbar card color="primary">
       <v-toolbar-title>Add a new link to the chain</v-toolbar-title>
 
        <v-spacer></v-spacer>

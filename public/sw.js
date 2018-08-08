@@ -42,3 +42,42 @@ workbox.routing.registerRoute(
     cacheName: 'vue-api-cache',
   })
 );
+
+self.addEventListener('push', function(event) {
+
+  var body;
+  if (event.data) {
+    body = event.data.text();
+  } else {
+    body = 'Push message no payload';
+  }
+
+  var options = {
+    body: body,
+    //icon: 'images/notification-flat.png',
+    vibrate: [100, 50, 100],
+    data: {
+      dateOfArrival: Date.now(),
+      primaryKey: 1
+    },
+    actions: [
+      {action: 'explore', 
+      title: 'Explore this new world',
+        //icon: 'images/checkmark.png'
+      },
+      {action: 'close', 
+      title: 'I don\'t want any of this',
+        //icon: 'images/xmark.png'
+      },
+    ]
+  };
+  
+  const promiseChain = self.registration.showNotification('Push Notification', options);
+
+  event.waitUntil(promiseChain);
+  if (event.data) {
+    console.log('This push event has data: ', event.data.text());
+  } else {
+    console.log('This push event has no data.');
+  }
+});

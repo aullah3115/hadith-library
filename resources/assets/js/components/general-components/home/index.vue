@@ -3,6 +3,7 @@
 
 
     <!--router-link :to="{ name: 'books', params: {} }">View our collection of books</router-link-->
+    
     <v-jumbotron>
       <h1 class="text-xs-center">Welcome to the Library</h1>
       <div class="text-xs-center">

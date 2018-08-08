@@ -3,6 +3,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Storage;
 use Cviebrock\LaravelElasticsearch\Facade as ElasticSearch;
+use App\Elasticsearch\Entities\Search;
 
 class SearchService
 {
@@ -13,23 +14,9 @@ class SearchService
 
   public function search($data){
 
-    $index = implode(',', $data['index']);
-    $query = $data['query'];
-
-    $params = [
-    'index' => $index,
-    'type' => '_doc',
-    'body' => [
-        'query' => [
-            'multi_match' => [
-                'query' => $query,
-                  ]
-              ]
-          ]
-      ];
-
-    $results = Elasticsearch::search($params);
-    return $results['hits']['hits'];
+    $elastic_search = new Search;
+    $results = $elastic_search->search($data['index'], $data['query']);
+    return $results;
   }
 
 

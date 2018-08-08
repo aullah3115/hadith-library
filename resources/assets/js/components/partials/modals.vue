@@ -101,6 +101,14 @@
       <c-compare-hadith></c-compare-hadith>
     </v-dialog>
 
+    <v-dialog v-if="compareAll" :scrollable="true" fullscreen v-model="compareAll">
+      <c-compare-all></c-compare-all>
+    </v-dialog>
+
+    <v-dialog v-if="contact" :scrollable="true" fullscreen v-model="contact">
+      <c-contact-form></c-contact-form>
+    </v-dialog>
+
     <!--Admin Modals-->
     <v-dialog v-if="addRole" :scrollable="true" fullscreen v-model="addRole">
       <c-add-role></c-add-role>
@@ -222,6 +230,14 @@ export default {
 
     compare: {
       get(){return this.$store.state.modal.modals.compare;}
+    },
+
+    compareAll: {
+      get(){return this.$store.state.modal.modals.compareAll;}
+    },
+
+    contact: {
+      get(){return this.$store.state.modal.modals.contact;}
     },
 
     // Admin Modals

@@ -41,6 +41,19 @@ class HadithCommentController extends Controller
 
     }
 
+    public function relatedComments(Request $request){
+      $data = $request->all();
+      //return $data;
+      $comments = $this->service->RelatedComments($data);
+
+      return response()->json([
+        'comments' => $comments,
+        'status' => 201
+      ]);
+
+
+    }
+
     public function store(AddHadithComment $request)
     {
       $validated = $request->validated();

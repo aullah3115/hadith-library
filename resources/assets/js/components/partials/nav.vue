@@ -6,24 +6,29 @@
         <v-toolbar-side-icon @click.stop="show('navDrawer')"></v-toolbar-side-icon>
 
         <mq-layout mq="lg+">
-          <v-btn icon small :to="{ name: 'home', params: {} }" active-class>
-            <v-icon small>home</v-icon>
-          </v-btn>
-        </mq-layout>
 
-        <mq-layout mq="lg+">
           <v-btn small icon @click="goBack">
             <v-icon small v-if="$vuetify.rtl">arrow_forward</v-icon>
             <v-icon small v-else>arrow_back</v-icon>
           </v-btn>
 
-          <v-btn small icon @click="goNext">
+          <v-btn icon small :to="{ name: 'home', params: {} }" active-class>
+            <v-icon small>home</v-icon>
+          </v-btn>          
+
+          <v-btn icon v-if="tree" small @click="toggleDirectory()">
+            <v-icon small>folder</v-icon>
+          </v-btn>
+
+          <!--v-btn small icon @click="goNext">
             <v-icon small v-if="$vuetify.rtl">arrow_back</v-icon>
             <v-icon small v-else>arrow_forward</v-icon>
-          </v-btn>
+          </v-btn-->
         </mq-layout>
 
         <v-toolbar-title>{{$t('message.hadith_library')}}</v-toolbar-title>
+
+        
 
         <v-spacer></v-spacer>
 
@@ -129,6 +134,9 @@ export default {
       let rtl = this.$store.state.rtl;
       return rtl ? true : false;
     },
+    tree: {
+      get(){return this.$store.state.book.tree;}
+    }
   },
 
   methods: {
@@ -164,6 +172,10 @@ export default {
 
     goNext(){
       this.$router.go(1);
+    },
+
+    toggleDirectory: function(){
+      this.$store.dispatch('toggleDirectory', !this.$store.state.directory)
     },
 
 
