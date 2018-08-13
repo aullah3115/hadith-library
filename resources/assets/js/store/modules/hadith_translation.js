@@ -1,3 +1,5 @@
+import Alert from '../../classes/alert';
+
 /**
  * This is the ... module.
  */
@@ -26,7 +28,7 @@ export default {
       if(!state.translations){
         state.translations = [];
       }
-      state.comments.push(translation);
+      state.translations.push(translation);
     },
 
     storeTranslations(state, translations){
@@ -58,6 +60,7 @@ export default {
       .then( ({data}) => {
         dispatch('modal/hide', 'addTranslation', {root: true});
         commit('addTranslation', data.translation);
+        Alert.dispatch('Successfully added new hadith translation', 'success')
       })
       .catch( (response) => {
         //TODO

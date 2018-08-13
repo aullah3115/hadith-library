@@ -33,7 +33,7 @@
 
         <v-spacer></v-spacer>
 
-          <v-btn color="primary" @click="show('compareAll')">Show all</v-btn>
+          <v-btn flat @click="show('compareAll')">Show all</v-btn>
           <v-btn icon small v-if="$isAllowed('auth')" @click.native="show('linkHadith')">
             <v-icon>add</v-icon>
           </v-btn>

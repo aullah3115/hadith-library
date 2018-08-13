@@ -42,7 +42,7 @@
               <v-list-tile @click.prevent='selectTranslation(translation)'>
                 <v-list-tile-content>
                   <v-list-tile-title>
-                    {{translation.language.name}}
+                    {{translation.language.name}} - {{translation.translator}}
                   </v-list-tile-title>
 
                 </v-list-tile-content>

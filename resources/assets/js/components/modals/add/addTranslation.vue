@@ -33,8 +33,11 @@
 
           <v-stepper-items>
             <v-stepper-content step="1">
-
+                  <p>1. </p>
                   <v-text-field label="Name of translator" v-model="translator"></v-text-field>
+                  <v-divider></v-divider>
+
+                  <p>2. </p>
                   <div v-if="languages">
 
                     <v-autocomplete
